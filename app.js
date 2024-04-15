@@ -13,4 +13,7 @@ app.get('/', (req, res) => {
     res.send('Funcionando')
 })
 
+app.use('/api/auth/new-user', require('./routes/newUser'))
+app.use('/api/users', require('./routes/users'))
+
 module.exports = app
