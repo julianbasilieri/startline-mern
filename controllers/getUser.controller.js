@@ -5,23 +5,21 @@ const UsersController = {}
 UsersController.getAllUsers = async (req, res) => {
     try {
         const usuarios = await Usuario.find()
-        return res.json(usuarios)
+        return res.json({ success: true, usuarios })
     } catch (error) {
-        return res.status(400).json({ code: 400, message: error.message, stack: error.stack })
+        return res.json({ success: false, message: error.message, stack: error.stack })
     }
 }
 
 
-UsersController.getUserByUsername = async (req, res) => {
+UsersController.getUsersByUsername = async (req, res) => {
     try {
-        const usuario = await Usuario.find({ username: { $regex: '.*' + req.params.username + '.*', $options: 'i' } })
-        if (!usuario) {
-            return res.status(404).json({ message: 'Usuario no encontrado' })
-        }
+        const usuarios = await Usuario.find({ username: new RegExp(req.params.username, 'i') })
+        if (!usuarios) throw new Error('Usuario no encontrado')
 
-        res.json(usuario)
+        return res.json({ success: true, usuarios })
     } catch (error) {
-        return res.status(400).json({ code: 400, message: error.message, stack: error.stack })
+        return res.json({ success: false, message: error.message, stack: error.stack })
     }
 }
 

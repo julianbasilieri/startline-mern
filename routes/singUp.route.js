@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const router = Router()
 
-const { postNewUser } = require('../controllers/newUser.controller')
+const { postNewUser } = require('../controllers/singUp.controller')
 
 router.route('/')
     .post(postNewUser)
