@@ -4,18 +4,12 @@ const userData = require('../utils/userData');
 const mayusFirstLetter = require('../utils/mayusFirstLetter')
 const jwt = require('jsonwebtoken');
 const Role = require('../models/role');
-const isInputEmpty = require('../utils/isInputEmpty');
-const trimObject = require('../utils/trimObject');
 
 const AuthController = {}
 
 AuthController.signUp = async (req, res) => {
     try {
         const { firstname, middlename, lastname, username, email, password, roles } = userData(req.body)
-
-        if (isInputEmpty({ firstname, lastname, username, email, password })) throw new Error('Campos vacíos')
-
-        trimObject({ firstname, middlename, lastname, username, email })
 
         const passwordHash = bcryptjs.hashSync(password, 10)
 
@@ -41,15 +35,13 @@ AuthController.signUp = async (req, res) => {
         return res.json({ success: true, message: 'Usuario creado correctamente', user: usuarioGuardado })
 
     } catch (error) {
-        return res.json({ success: false, message: error.message, stack: error.stack })
+        return res.json({ success: false, message: error.message })
     }
 }
 
 AuthController.logIn = async (req, res) => {
     try {
         const { email, password } = req.body
-
-        if (isInputEmpty({ email, password })) throw new Error('Campos vacíos')
 
         const usuarioEncontrado = await User.findOne({ email: email.toLowerCase() });
 
@@ -70,7 +62,7 @@ AuthController.logIn = async (req, res) => {
 
         return res.json({ success: true, message: 'Usuario logeado correctamente', token, userData: { ...payload } })
     } catch (error) {
-        return res.json({ success: false, message: error.message, stack: error.stack })
+        return res.json({ success: false, message: error.message })
     }
 }
 

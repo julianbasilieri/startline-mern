@@ -1,5 +1,5 @@
 const errorHandler = (err, req, res, next) => {
-    console.error(err.stack); // Loguea el error en la consola para propósitos de debugging
+    // console.error(err.stack);
     return res.json({ success: false, message: err.message })
 };
 

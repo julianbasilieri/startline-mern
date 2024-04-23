@@ -1,7 +1,12 @@
 const express = require('express')
+const cors = requiere('cors')
+const helmet = require('helmet');
+const morgan = require('morgan')
+
+const createRoles = require('./utils/initialSetup')
 const errorHandler = require('./middlewares/errorHandler');
 const notFound = require('./middlewares/notFound')
-const createRoles = require('./utils/initialSetup')
+
 
 const app = express()
 createRoles()
@@ -10,7 +15,11 @@ createRoles()
 app.set('port', process.env.PORT)
 
 // Middlewares
+app.use(cors())
 app.use(express.json())
+app.use(morgan('dev'))
+app.use(helmet())
+
 
 // Routes
 app.get('/', (req, res) => {

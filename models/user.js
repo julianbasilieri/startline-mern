@@ -56,4 +56,14 @@ const UsuarioSchema = new Schema({
     }
 )
 
+UsuarioSchema.path('username').validate(async function(value) {
+    const count = await this.model('User').countDocuments({ username: value });
+    return !count;
+}, 'El nombre de usuario ya está en uso');
+
+UsuarioSchema.path('email').validate(async function(value) {
+    const count = await this.model('User').countDocuments({ email: value });
+    return !count;
+}, 'El mail ya está en uso');
+
 module.exports = model('User', UsuarioSchema)
