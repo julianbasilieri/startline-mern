@@ -1,42 +1,74 @@
 const bcryptjs = require('bcryptjs')
 const User = require('../models/user');
 const userData = require('../utils/userData');
+const mayusFirstLetter = require('../utils/mayusFirstLetter')
+const jwt = require('jsonwebtoken');
+const Role = require('../models/role');
+const isInputEmpty = require('../utils/isInputEmpty');
+const trimObject = require('../utils/trimObject');
 
 const AuthController = {}
 
-AuthController.postNewUser = async (req, res) => {
+AuthController.signUp = async (req, res) => {
     try {
-        const usuario = userData(req.body)
+        const { firstname, middlename, lastname, username, email, password, roles } = userData(req.body)
 
-        for (const key in usuario) {
-            if (typeof usuario[key] === 'string') usuario[key] = usuario[key].trim()
-        }
+        if (isInputEmpty({ firstname, lastname, username, email, password })) throw new Error('Campos vacíos')
 
-        const fieldsToCheck = ['firstname', 'lastname', 'username', 'email', 'password', 'role']
+        trimObject({ firstname, middlename, lastname, username, email })
 
-        if (fieldsToCheck.some(field => usuario[field] === undefined || usuario[field] === '')) throw new Error('Alguno de los campos esta vacio')
-
-        const passwordHash = await bcryptjs.hash(usuario.password, 10)
-
-        const mayusFirstLetter = (str) => {
-            return str.charAt(0).toUpperCase() + str.toLowerCase().slice(1);
-        }
+        const passwordHash = bcryptjs.hashSync(password, 10)
 
         const nuevoUsuario = new User({
-            ...usuario,
-            firstname: mayusFirstLetter(usuario.firstname),
-            middlename: mayusFirstLetter(usuario.middlename),
-            lastname: mayusFirstLetter(usuario.lastname),
-            username: usuario.username.toLowerCase(),
-            email: usuario.email.toLowerCase(),
+            firstname: mayusFirstLetter(firstname),
+            middlename: mayusFirstLetter(middlename),
+            lastname: mayusFirstLetter(lastname),
+            username: username.toLowerCase(),
+            email: email.toLowerCase(),
             password: passwordHash,
-            role: usuario.role
         })
 
-        await nuevoUsuario.save()
+        if (roles) {
+            const foundRoles = await Role.find({ name: { $in: roles } })
+            nuevoUsuario.role = foundRoles.map(role => role._id)
+        } else {
+            const role = await Role.findOne({ name: 'member' })
+            nuevoUsuario.role = [role._id]
+        }
 
-        return res.json({ success: true, message: 'Usuario creado correctamente' })
+        const usuarioGuardado = await nuevoUsuario.save()
 
+        return res.json({ success: true, message: 'Usuario creado correctamente', user: usuarioGuardado })
+
+    } catch (error) {
+        return res.json({ success: false, message: error.message, stack: error.stack })
+    }
+}
+
+AuthController.logIn = async (req, res) => {
+    try {
+        const { email, password } = req.body
+
+        if (isInputEmpty({ email, password })) throw new Error('Campos vacíos')
+
+        const usuarioEncontrado = await User.findOne({ email: email.toLowerCase() });
+
+        if (!usuarioEncontrado || !bcryptjs.compareSync(password, usuarioEncontrado.password)) throw new Error('Credenciales incorrectas')
+
+        console.log(usuarioEncontrado)
+
+        const payload = {
+            _id: usuarioEncontrado._id,
+            firstname: usuarioEncontrado.firstname,
+            middlename: usuarioEncontrado.middlename,
+            lastname: usuarioEncontrado.lastname,
+            username: usuarioEncontrado.username,
+            email
+        }
+
+        const token = jwt.sign(payload, process.env.SECRET, { expiresIn: 7200 })
+
+        return res.json({ success: true, message: 'Usuario logeado correctamente', token, userData: { ...payload } })
     } catch (error) {
         return res.json({ success: false, message: error.message, stack: error.stack })
     }
