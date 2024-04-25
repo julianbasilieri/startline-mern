@@ -1,10 +1,10 @@
 const express = require('express')
-const cors = requiere('cors')
-const helmet = require('helmet');
+const cors = require('cors')
+const helmet = require('helmet')
 const morgan = require('morgan')
 
 const createRoles = require('./utils/initialSetup')
-const errorHandler = require('./middlewares/errorHandler');
+const errorHandler = require('./middlewares/errorHandler')
 const notFound = require('./middlewares/notFound')
 
 

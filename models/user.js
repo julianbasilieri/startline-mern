@@ -17,8 +17,8 @@ const UsuarioSchema = new Schema({
         validate: {
             validator: function (v) {
                 // Validar que la fecha sea en el formato dd/mm/yyyy
-                const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
-                return regex.test(v);
+                const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/
+                return regex.test(v)
             }
         }
     },
@@ -49,21 +49,15 @@ const UsuarioSchema = new Schema({
     role: [{
         ref: 'Role',
         type: Schema.Types.ObjectId
-    }]
+    }],
+    isActive: {
+        type: Boolean,
+        default: false
+    }
 },
     {
         timestamps: true
     }
 )
-
-UsuarioSchema.path('username').validate(async function(value) {
-    const count = await this.model('User').countDocuments({ username: value });
-    return !count;
-}, 'El nombre de usuario ya está en uso');
-
-UsuarioSchema.path('email').validate(async function(value) {
-    const count = await this.model('User').countDocuments({ email: value });
-    return !count;
-}, 'El mail ya está en uso');
 
 module.exports = model('User', UsuarioSchema)

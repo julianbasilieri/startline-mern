@@ -1,5 +1,7 @@
-const Usuario = require('../models/user');
-const userData = require('../utils/userData');
+const Usuario = require('../models/user')
+const userData = require('../utils/userData')
+const Role = require('../models/role')
+const jwt = require('jsonwebtoken')
 
 const UsersController = {}
 
@@ -11,7 +13,6 @@ UsersController.getAllUsers = async (req, res, next) => {
         return res.json({ success: false, message: error.message })
     }
 }
-
 
 UsersController.getUsersByUsername = async (req, res, next) => {
     try {
@@ -46,6 +47,81 @@ UsersController.updateById = async (req, res, next) => {
         if (!usuarioActualizado) throw new Error('Usuario no encontrado')
 
         return res.json({ success: true, message: 'Usuario actualizado correctamente', usuarioActualizado })
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
+    }
+}
+
+UsersController.darPermisos = async (req, res) => {
+    try {
+        const usuario = await Usuario.findById(req.params.id)
+
+        if (!usuario) throw new Error('Usuario no encontrado')
+
+        const rolesUsuario = await Role.find({ _id: { $in: usuario.role } })
+
+        if (rolesUsuario.some((role) => role.name === 'admin')) throw new Error('Ya es admin')
+
+        const adminRole = await Role.findOne({ name: 'admin' })
+
+        usuario.role.push(adminRole._id)
+
+        await usuario.save()
+
+        res.json({ success: true, usuario })
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
+    }
+}
+
+UsersController.quitarPermisos = async (req, res) => {
+    try {
+        const usuario = await Usuario.findById(req.params.id)
+
+        if (!usuario) throw new Error('Usuario no encontrado')
+
+        const rolesUsuario = await Role.find({ _id: { $in: usuario.role } })
+
+        if (!rolesUsuario.some((role) => role.name === 'admin')) throw new Error('No es admin')
+
+        const adminRoleId = rolesUsuario.find(role => role.name === 'admin')._id
+
+        for (let i = 0; i < usuario.role.length; i++) {
+            if (usuario.role[i].toString() === adminRoleId.toString()) {
+                delete usuario.role[i]
+            }
+        }
+
+        usuario.role = usuario.role.filter(roleId => roleId !== null)
+
+        await usuario.save()
+
+        res.json({ success: true, usuario })
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
+    }
+}
+
+UsersController.activate = async (req, res) => {
+    try {
+        const token = req.params.token
+
+        if (!token) throw new Error('Token no provider')
+
+        const { id } = jwt.verify(token, process.env.SECRET)
+        const usuario = await Usuario.findById(id)
+
+        if (!usuario ) new Error('Usuario inexistente')
+        if (usuario.isActive) throw new Error('La cuenta ya esta activada')
+
+        usuario.isActive = true
+
+        console.log(usuario);
+
+        await usuario.save()
+
+        res.json({ success: true, message: 'Usuario activado' })
+
     } catch (error) {
         return res.json({ success: false, message: error.message })
     }

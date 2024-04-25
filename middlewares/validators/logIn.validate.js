@@ -1,17 +1,17 @@
-const { check, validationResult } = require('express-validator');
+const { check, validationResult } = require('express-validator')
 
 const validateLogIn = () => {
     return [
         check('email').trim().isEmail().withMessage('El email no es válido'),
         check('password').notEmpty().withMessage('La contraseña es obligatoria'),
         (req, res, next) => {
-            const errors = validationResult(req);
+            const errors = validationResult(req)
 
-            if (errors) return next(new Error('Campos invalidos'))
+            if (!errors.isEmpty()) return next(new Error('Campos invalidos'))
 
-            next();
+            next()
         }
-    ];
-};
+    ]
+}
 
-module.exports = validateLogIn;
+module.exports = validateLogIn
