@@ -80,6 +80,8 @@ UsersController.quitarPermisos = async (req, res) => {
 
         if (!usuario) throw new Error('Usuario no encontrado')
 
+        if (usuario._id == req.user._id) throw new Error('No puedes quitarte permisos')
+
         const rolesUsuario = await Role.find({ _id: { $in: usuario.role } })
 
         if (!rolesUsuario.some((role) => role.name === 'admin')) throw new Error('No es admin')
@@ -111,10 +113,10 @@ UsersController.activate = async (req, res) => {
         const { id } = jwt.verify(token, process.env.SECRET)
         const usuario = await Usuario.findById(id)
 
-        if (!usuario ) new Error('Usuario inexistente')
-        if (usuario.isActive) throw new Error('La cuenta ya esta activada')
+        if (!usuario) new Error('Usuario inexistente')
+        if (usuario.verified) throw new Error('La cuenta ya esta activada')
 
-        usuario.isActive = true
+        usuario.verified = true
 
         console.log(usuario);
 

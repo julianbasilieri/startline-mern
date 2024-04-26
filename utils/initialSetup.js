@@ -1,7 +1,7 @@
 const Role = require('../models/role')
+const User = require('../models/user')
 
 const createRoles = async () => {
-
     try {
         const count = await Role.estimatedDocumentCount()
 
@@ -19,4 +19,27 @@ const createRoles = async () => {
     }
 }
 
-module.exports = createRoles
+const createAdmin = async () => {
+    try {
+        const count = await User.estimatedDocumentCount()
+        const roleAdmin = await Role.find({ name: 'admin' })
+        const roleMember = await Role.findOne({ name: 'member' })
+
+        if (count > 0) return
+
+        const values = await new User({
+            firstname: 'admin',
+            lastname: 'admin',
+            username: 'admin',
+            email: 'admin@gmail.com',
+            password: 'admin',
+            role: [roleMember._id, roleAdmin._id]
+        }).save()
+
+        console.log(values)
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+module.exports = { createRoles, createAdmin }

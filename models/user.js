@@ -20,16 +20,20 @@ const UsuarioSchema = new Schema({
                 const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/
                 return regex.test(v)
             }
-        }
+        },
+        default: null
     },
     photo: {
-        type: String
+        type: String,
+        default: 'https://brighterwriting.com/wp-content/uploads/icon-user-default.png'
     },
     university: {
-        type: String
+        type: String,
+        default: ''
     },
     extra_info: {
-        type: String
+        type: String,
+        default: ''
     },
     username: {
         type: String,
@@ -47,10 +51,10 @@ const UsuarioSchema = new Schema({
         require: true
     },
     role: [{
-        ref: 'Role',
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        ref: 'Role'
     }],
-    isActive: {
+    verified: {
         type: Boolean,
         default: false
     }

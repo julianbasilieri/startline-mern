@@ -3,13 +3,14 @@ const cors = require('cors')
 const helmet = require('helmet')
 const morgan = require('morgan')
 
-const createRoles = require('./utils/initialSetup')
+const { createRoles, createAdmin } = require('./utils/initialSetup')
 const errorHandler = require('./middlewares/errorHandler')
 const notFound = require('./middlewares/notFound')
 
 
 const app = express()
 createRoles()
+createAdmin()
 
 // Configuracion
 app.set('port', process.env.PORT)
@@ -19,7 +20,6 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan('dev'))
 app.use(helmet())
-
 
 // Routes
 app.get('/', (req, res) => {

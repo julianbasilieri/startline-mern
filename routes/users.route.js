@@ -12,9 +12,8 @@ router.route('/:id')
     .put([verifyToken, isAdmin], updateById)
     .delete([verifyToken, isAdmin], deleteById)
 
-router.route('/permiso/:id')
-    .post([verifyToken, isAdmin], darPermisos)
-    .patch([verifyToken, isAdmin], quitarPermisos)
+router.post('/add-permiso/:id', [verifyToken, isAdmin], darPermisos)
+router.post('/remove-permiso/:id', [verifyToken, isAdmin], quitarPermisos)
 
 router.get('/activate/:token', activate)
 
