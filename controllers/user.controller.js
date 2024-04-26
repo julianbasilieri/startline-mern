@@ -1,7 +1,8 @@
-const Usuario = require('../models/user')
-const userData = require('../utils/userData')
-const Role = require('../models/role')
 const jwt = require('jsonwebtoken')
+
+const Usuario = require('../models/user')
+const Role = require('../models/role')
+const userData = require('../utils/userData')
 
 const UsersController = {}
 
@@ -17,7 +18,7 @@ UsersController.getAllUsers = async (req, res, next) => {
 UsersController.getUsersByUsername = async (req, res, next) => {
     try {
         const usuarios = await Usuario.find({ username: new RegExp(req.params.username, 'i') })
-        if (!usuarios) throw new Error('Usuarios no encontrado')
+        if (!usuarios) throw new Error('Usuario no encontrado')
 
         return res.json({ success: true, usuarios })
     } catch (error) {
