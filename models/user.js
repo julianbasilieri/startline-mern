@@ -14,6 +14,7 @@ const UsuarioSchema = new Schema({
     },
     birthdate: {
         type: Date,
+        // Fijarme que esto este funcionando correctamente
         validate: {
             validator: function (v) {
                 // Validar que la fecha sea en el formato dd/mm/yyyy

@@ -19,6 +19,7 @@ const headerMail = {
     to: "julian_basilieri@hotmail.com"
 }
 
+// Coregir el href para poner la conexion en las variables de entorno
 const sendMailVerify = async (usuario, token) => {
     try {
         const options = {

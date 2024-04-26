@@ -18,9 +18,20 @@ UsersController.getAllUsers = async (req, res, next) => {
 UsersController.getUsersByUsername = async (req, res, next) => {
     try {
         const usuarios = await Usuario.find({ username: new RegExp(req.params.username, 'i') })
-        if (!usuarios) throw new Error('Usuario no encontrado')
+        if (!usuarios) throw new Error('No existen usuarios con ese nombre')
 
         return res.json({ success: true, usuarios })
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
+    }
+}
+
+UsersController.getUserById = async (req, res, next) => {
+    try {
+        const usuario = await Usuario.findById(req.params.id)
+        if (!usuario) throw new Error('Usuario no encontrado')
+
+        return res.json({ success: true, usuario })
     } catch (error) {
         return res.json({ success: false, message: error.message })
     }
@@ -119,7 +130,7 @@ UsersController.activate = async (req, res) => {
 
         usuario.verified = true
 
-        console.log(usuario);
+        console.log(usuario)
 
         await usuario.save()
 
