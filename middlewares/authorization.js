@@ -46,7 +46,7 @@ authorization.isMember = async (req, res, next) => {
     }
 }
 
-authorization.isOwner = async(req, res, next) => {
+authorization.isOwner = async (req, res, next) => {
     try {
         const post = await Post.findById(req.user._id)
 

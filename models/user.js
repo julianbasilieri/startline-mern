@@ -14,14 +14,6 @@ const UsuarioSchema = new Schema({
     },
     birthdate: {
         type: Date,
-        // Fijarme que esto este funcionando correctamente
-        validate: {
-            validator: function (v) {
-                // Validar que la fecha sea en el formato dd/mm/yyyy
-                const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/
-                return regex.test(v)
-            }
-        },
         default: null
     },
     photo: {

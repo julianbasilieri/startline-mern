@@ -1,22 +1,20 @@
 const { Router } = require('express')
 const router = Router()
 
-// Utilizar un objeto
-const { getAllUsers, getUsersByUsername, getUserById, updateById, deleteById, darPermisos, quitarPermisos, activate } = require('../controllers/user.controller')
+const UsersController = require('../controllers/user.controller')
 const { verifyToken, isAdmin, isMember } = require('../middlewares/authorization')
+const { validateUpdateUser } = require('../middlewares/validators/user.validate')
 
-router.get('/', getAllUsers)
-
-router.get('/:username', getUsersByUsername)
+router.get('/', UsersController.getAllUsers)
+router.get('/:username', UsersController.getUsersByUsername)
 
 router.route('/:id')
-    .get(getUserById)
-    .put([verifyToken, isAdmin], updateById)
-    .delete([verifyToken, isAdmin], deleteById)
+    .get(UsersController.getUserById)
+    .put([verifyToken, isAdmin, validateUpdateUser], UsersController.updateById)
+    .delete([verifyToken, isAdmin], UsersController.deleteById)
 
-router.post('/add-permiso/:id', [verifyToken, isAdmin], darPermisos)
-router.post('/remove-permiso/:id', [verifyToken, isAdmin], quitarPermisos)
-
-router.get('/activate/:token', activate)
+router.post('/add-permiso/:id', [verifyToken, isAdmin], UsersController.darPermisos)
+router.post('/remove-permiso/:id', [verifyToken, isAdmin], UsersController.quitarPermisos)
+router.get('/activate/:token', UsersController.activate)
 
 module.exports = router

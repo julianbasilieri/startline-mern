@@ -1,6 +1,5 @@
 const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-
 const User = require('../models/user')
 const Role = require('../models/role')
 const mayusFirstLetter = require('../utils/mayusFirstLetter')
@@ -45,6 +44,8 @@ AuthController.logIn = async (req, res) => {
         const usuarioEncontrado = await User.findOne({ email: email.toLowerCase() })
 
         if (!usuarioEncontrado || !bcryptjs.compareSync(password, usuarioEncontrado.password)) throw new Error('Credenciales incorrectas')
+
+        if (!usuarioEncontrado.verified) throw new Error('Debes verificar tu cuenta, revisa tu mail')
 
         const payload = {
             _id: usuarioEncontrado._id,

@@ -1,14 +1,14 @@
 const jwt = require('jsonwebtoken')
-
 const Usuario = require('../models/user')
 const Role = require('../models/role')
-const userData = require('../utils/userData')
+const hasSomeParam = require('../utils/hasSomeparam')
 
 const UsersController = {}
 
 UsersController.getAllUsers = async (req, res, next) => {
     try {
         const usuarios = await Usuario.find()
+
         return res.json({ success: true, usuarios })
     } catch (error) {
         return res.json({ success: false, message: error.message })
@@ -18,6 +18,7 @@ UsersController.getAllUsers = async (req, res, next) => {
 UsersController.getUsersByUsername = async (req, res, next) => {
     try {
         const usuarios = await Usuario.find({ username: new RegExp(req.params.username, 'i') })
+
         if (!usuarios) throw new Error('No existen usuarios con ese nombre')
 
         return res.json({ success: true, usuarios })
@@ -29,6 +30,7 @@ UsersController.getUsersByUsername = async (req, res, next) => {
 UsersController.getUserById = async (req, res, next) => {
     try {
         const usuario = await Usuario.findById(req.params.id)
+
         if (!usuario) throw new Error('Usuario no encontrado')
 
         return res.json({ success: true, usuario })
@@ -41,6 +43,7 @@ UsersController.deleteById = async (req, res, next) => {
     try {
         // const usuario = await Usuario.findByIdAndDelete(req.params.id)
         const usuario = await Usuario.findById(req.params.id)
+
         if (!usuario) throw new Error('Usuario no encontrado')
 
         return res.json({ success: true, message: 'Usuario eliminado correctamente' })
@@ -51,10 +54,19 @@ UsersController.deleteById = async (req, res, next) => {
 
 UsersController.updateById = async (req, res, next) => {
     try {
-        const usuario = userData(req.body)
-        const usuarioActualizado = await Usuario.findByIdAndUpdate(req.params.id, usuario, {
-            new: true
-        })
+        const usuario = {
+            firstname: req.body.firstname,
+            middlename: req.body.middlename,
+            lastname: req.body.lastname,
+            birthdate: req.body.birthdate,
+            photo: req.body.photo,
+            university: req.body.university,
+            extra_info: req.body.extra_info,
+        }
+
+        hasSomeParam(usuario)
+
+        const usuarioActualizado = await Usuario.findByIdAndUpdate(req.params.id, usuario, { new: true })
 
         if (!usuarioActualizado) throw new Error('Usuario no encontrado')
 
@@ -130,12 +142,9 @@ UsersController.activate = async (req, res) => {
 
         usuario.verified = true
 
-        console.log(usuario)
-
         await usuario.save()
 
         res.json({ success: true, message: 'Usuario activado' })
-
     } catch (error) {
         return res.json({ success: false, message: error.message })
     }
