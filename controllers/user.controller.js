@@ -2,6 +2,10 @@ const jwt = require('jsonwebtoken')
 const Usuario = require('../models/user')
 const Role = require('../models/role')
 const hasSomeParam = require('../utils/hasSomeparam')
+const NotFoundError = require('../errors/notFoundError')
+const InvalidDataError = require('../errors/invalidDataError')
+const AuthorizationError = require('../errors/authorizationError')
+const OtherError = require('../errors/otherError')
 
 const UsersController = {}
 
@@ -11,7 +15,7 @@ UsersController.getAllUsers = async (req, res, next) => {
 
         return res.json({ success: true, usuarios })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 
@@ -19,36 +23,26 @@ UsersController.getUsersByUsername = async (req, res, next) => {
     try {
         const usuarios = await Usuario.find({ username: new RegExp(req.params.username, 'i') })
 
-        if (!usuarios) throw new Error('No existen usuarios con ese nombre')
+        if (usuarios.length === 0) throw new NotFoundError('usuario')
 
         return res.json({ success: true, usuarios })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
-    }
-}
-
-UsersController.getUserById = async (req, res, next) => {
-    try {
-        const usuario = await Usuario.findById(req.params.id)
-
-        if (!usuario) throw new Error('Usuario no encontrado')
-
-        return res.json({ success: true, usuario })
-    } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 
 UsersController.deleteById = async (req, res, next) => {
     try {
+        // if (req.user._id === req.params.id) throw new OtherError('No puedes eliminarte')
+
         // const usuario = await Usuario.findByIdAndDelete(req.params.id)
         const usuario = await Usuario.findById(req.params.id)
 
-        if (!usuario) throw new Error('Usuario no encontrado')
+        if (!usuario) throw new NotFoundError('Usuario')
 
         return res.json({ success: true, message: 'Usuario eliminado correctamente' })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 
@@ -64,15 +58,15 @@ UsersController.updateById = async (req, res, next) => {
             extra_info: req.body.extra_info,
         }
 
-        hasSomeParam(usuario)
+        if (!hasSomeParam(usuario)) throw new InvalidDataError()
 
         const usuarioActualizado = await Usuario.findByIdAndUpdate(req.params.id, usuario, { new: true })
 
-        if (!usuarioActualizado) throw new Error('Usuario no encontrado')
+        if (!usuarioActualizado) throw new NotFoundError('Usuario')
 
         return res.json({ success: true, message: 'Usuario actualizado correctamente', usuarioActualizado })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 
@@ -80,21 +74,19 @@ UsersController.darPermisos = async (req, res) => {
     try {
         const usuario = await Usuario.findById(req.params.id)
 
-        if (!usuario) throw new Error('Usuario no encontrado')
-
-        const rolesUsuario = await Role.find({ _id: { $in: usuario.role } })
-
-        if (rolesUsuario.some((role) => role.name === 'admin')) throw new Error('Ya es admin')
+        if (!usuario) throw new NotFoundError('Usuario')
 
         const adminRole = await Role.findOne({ name: 'admin' })
 
-        usuario.role.push(adminRole._id)
+        if (usuario.role.toString() === adminRole._id.toString()) throw new OtherError('Ya es admin')
+
+        usuario.role = adminRole._id
 
         await usuario.save()
 
         res.json({ success: true, usuario })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 
@@ -102,29 +94,22 @@ UsersController.quitarPermisos = async (req, res) => {
     try {
         const usuario = await Usuario.findById(req.params.id)
 
-        if (!usuario) throw new Error('Usuario no encontrado')
+        if (!usuario) throw new NotFoundError('Usuario')
 
-        if (usuario._id == req.user._id) throw new Error('No puedes quitarte permisos')
+        if (usuario._id == req.user._id) throw new OtherError('No puedes quitarte permisos')
 
-        const rolesUsuario = await Role.find({ _id: { $in: usuario.role } })
+        const memberRole = await Role.findOne({ name: 'member' })
+        const adminRole = await Role.findOne({ name: 'admin' })
 
-        if (!rolesUsuario.some((role) => role.name === 'admin')) throw new Error('No es admin')
+        if (usuario.role.toString() !== adminRole._id.toString()) throw new OtherError('El usuario no es admin')
 
-        const adminRoleId = rolesUsuario.find(role => role.name === 'admin')._id
-
-        for (let i = 0; i < usuario.role.length; i++) {
-            if (usuario.role[i].toString() === adminRoleId.toString()) {
-                delete usuario.role[i]
-            }
-        }
-
-        usuario.role = usuario.role.filter(roleId => roleId !== null)
+        usuario.role = memberRole._id
 
         await usuario.save()
 
         res.json({ success: true, usuario })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 
@@ -132,13 +117,13 @@ UsersController.activate = async (req, res) => {
     try {
         const token = req.params.token
 
-        if (!token) throw new Error('Token no provider')
+        if (!token) throw new AuthorizationError('Token no provider')
 
         const { id } = jwt.verify(token, process.env.SECRET)
         const usuario = await Usuario.findById(id)
 
-        if (!usuario) new Error('Usuario inexistente')
-        if (usuario.verified) throw new Error('La cuenta ya esta activada')
+        if (!usuario) throw new NotFoundError('Usuario')
+        if (usuario.verified) throw new OtherError('La cuenta ya esta activada')
 
         usuario.verified = true
 
@@ -146,7 +131,7 @@ UsersController.activate = async (req, res) => {
 
         res.json({ success: true, message: 'Usuario activado' })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 

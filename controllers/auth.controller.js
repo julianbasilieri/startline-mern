@@ -4,6 +4,8 @@ const User = require('../models/user')
 const Role = require('../models/role')
 const mayusFirstLetter = require('../utils/mayusFirstLetter')
 const sendMailVerify = require('../utils/mailer')
+const AuthorizationError = require('../errors/authorizationError')
+const OtherError = require('../errors/otherError')
 
 const AuthController = {}
 
@@ -23,7 +25,7 @@ AuthController.signUp = async (req, res) => {
         })
 
         const role = await Role.findOne({ name: 'member' })
-        nuevoUsuario.role = [role._id]
+        nuevoUsuario.role = role._id
 
         const usuarioGuardado = await nuevoUsuario.save()
 
@@ -33,7 +35,7 @@ AuthController.signUp = async (req, res) => {
 
         return res.json({ success: true, message: 'Usuario creado correctamente', user: usuarioGuardado })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 
@@ -43,9 +45,9 @@ AuthController.logIn = async (req, res) => {
 
         const usuarioEncontrado = await User.findOne({ email: email.toLowerCase() })
 
-        if (!usuarioEncontrado || !bcryptjs.compareSync(password, usuarioEncontrado.password)) throw new Error('Credenciales incorrectas')
+        if (!usuarioEncontrado || !bcryptjs.compareSync(password, usuarioEncontrado.password)) throw new AuthorizationError('Credenciales incorrectas')
 
-        if (!usuarioEncontrado.verified) throw new Error('Debes verificar tu cuenta, revisa tu mail')
+        if (!usuarioEncontrado.verified) throw new OtherError('Debes verificar tu cuenta, revisa tu mail')
 
         const payload = {
             _id: usuarioEncontrado._id,
@@ -61,7 +63,7 @@ AuthController.logIn = async (req, res) => {
 
         return res.json({ success: true, message: 'Usuario logeado correctamente', token, userData: { ...payload } })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 

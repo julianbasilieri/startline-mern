@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs')
 const Role = require('../models/role')
 const User = require('../models/user')
 
@@ -12,8 +13,6 @@ const createRoles = async () => {
             new Role({ name: 'member' }).save(),
             new Role({ name: 'invited' }).save()
         ])
-
-        console.log(values)
     } catch (error) {
         console.error(error)
     }
@@ -22,21 +21,21 @@ const createRoles = async () => {
 const createAdmin = async () => {
     try {
         const count = await User.estimatedDocumentCount()
-        const roleAdmin = await Role.find({ name: 'admin' })
-        const roleMember = await Role.findOne({ name: 'member' })
+        const roleAdmin = await Role.findOne({ name: 'admin' })
 
         if (count > 0) return
 
-        const values = await new User({
+        const values = new User({
             firstname: 'admin',
             lastname: 'admin',
             username: 'admin',
             email: 'admin@gmail.com',
-            password: 'admin',
-            role: [roleMember._id, roleAdmin._id]
-        }).save()
-
-        console.log(values)
+            password: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
+            role: roleAdmin._id,
+            verified: true
+        })
+        
+        await values.save()
     } catch (error) {
         console.error(error)
     }

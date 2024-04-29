@@ -22,8 +22,8 @@ app.use(morgan('dev'))
 app.use(helmet())
 
 // Routes
-app.get('/', (req, res) => {
-    res.send('Funcionando')
+app.get('/status', (req, res) => {
+    res.json('ok')
 })
 
 app.use('/api/auth', require('./routes/auth.route'))

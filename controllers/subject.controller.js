@@ -1,3 +1,5 @@
+const InvalidDataError = require('../errors/invalidDataError')
+const NotFoundError = require('../errors/notFoundError')
 const Subject = require('../models/subject')
 const hasSomeParam = require('../utils/hasSomeparam')
 
@@ -9,7 +11,7 @@ SubjectController.getAllSubjects = async (req, res, next) => {
 
         return res.json({ success: true, subjects })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 
@@ -27,7 +29,7 @@ SubjectController.postSubject = async (req, res, next) => {
 
         return res.json({ success: true, subjectGuardado })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 
@@ -35,11 +37,11 @@ SubjectController.deleteById = async (req, res, next) => {
     try {
         const subject = await Subject.findByIdAndDelete(req.params.id)
 
-        if (!subject) throw new Error('Subject no encontrada')
+        if (!subject) throw new NotFoundError('Subject')
 
         return res.json({ success: true, message: 'Subject eliminado correctamente' })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 
@@ -51,15 +53,15 @@ SubjectController.updateById = async (req, res, next) => {
             color: req.body.color
         }
 
-        hasSomeParam(subject)
+        if (!hasSomeParam(subject)) throw new InvalidDataError()
 
         const subjectActualizada = await Subject.findByIdAndUpdate(req.params.id, subject, { new: true })
 
-        if (!subjectActualizada) throw new Error('Subject no encontrada')
+        if (!subjectActualizada) throw new NotFoundError('Subject')
 
         return res.json({ success: true, message: 'Subject actualizada correctamente', subjectActualizada })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.message })
     }
 }
 

@@ -6,7 +6,8 @@ const UsuarioSchema = new Schema({
         require: true
     },
     middlename: {
-        type: String
+        type: String,
+        default: ''
     },
     lastname: {
         type: String,
@@ -43,10 +44,10 @@ const UsuarioSchema = new Schema({
         type: String,
         require: true
     },
-    role: [{
+    role: {
         type: Schema.Types.ObjectId,
         ref: 'Role'
-    }],
+    },
     verified: {
         type: Boolean,
         default: false
