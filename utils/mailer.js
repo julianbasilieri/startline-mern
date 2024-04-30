@@ -1,5 +1,7 @@
 const nodemailer = require('nodemailer')
 
+const sendMail = {}
+
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -19,8 +21,7 @@ const headerMail = {
     to: "julian_basilieri@hotmail.com"
 }
 
-// Coregir el href para poner la conexion en las variables de entorno
-const sendMailVerify = async (usuario, token) => {
+sendMail.sendMailVerify = async (usuario, token) => {
     try {
         const options = {
             ...headerMail,
@@ -50,8 +51,35 @@ const sendMailVerify = async (usuario, token) => {
     }
 }
 
-const sendMailPassword = async(usuario, token) => {
-    
+sendMail.sendMailPassword = async (usuario, token) => {
+    try {
+        const options = {
+            ...headerMail,
+            subject: "Recuperacion de contraseña",
+            html: `
+                <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+                    <div style="max-width: 600px; margin: 0 auto; background-color: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                        <div style="background-color: #FF6347; color: #fff; padding: 20px;">
+                            <h1 style="margin: 0;">Recuperación de contraseña</h1>
+                        </div>
+                        <div style="padding: 20px;">
+                            <p style="font-size: 16px;">Hola ${usuario.firstname} ${usuario.lastname},</p>
+                            <p style="font-size: 16px;">Has solicitado una recuperación de contraseña. Tu nueva contraseña es:</p>
+                            <div style="text-align: center;">
+                                <a href="http://localhost:4000/api/auth/change-password/${token}" target="_blank" style="display: inline-block; padding: 15px 30px; background-color: #FF6347; color: #fff; text-decoration: none; border-radius: 5px; font-size: 18px;">Recuperar cuenta</a>
+                            </div>                            <p style="font-size: 16px;">Te recomendamos cambiarla por una contraseña segura tan pronto como ingreses.</p>
+                            <p style="font-size: 16px; color: #888;">Si no has solicitado esta recuperación, por favor ignora este mensaje.</p>
+                            <p style="font-size: 16px; color: #888;">${token}</p>
+                        </div>
+                    </div>
+                </div>
+            `
+        }
+        await transporter.sendMail(options)
+        console.log('Mail enviado')
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-module.exports = sendMailVerify
+module.exports = sendMail

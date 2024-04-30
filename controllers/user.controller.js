@@ -119,8 +119,8 @@ UsersController.activate = async (req, res) => {
 
         if (!token) throw new AuthorizationError('Token no provider')
 
-        const { id } = jwt.verify(token, process.env.SECRET)
-        const usuario = await Usuario.findById(id)
+        const { _id } = jwt.verify(token, process.env.SECRET)
+        const usuario = await Usuario.findById(_id)
 
         if (!usuario) throw new NotFoundError('Usuario')
         if (usuario.verified) throw new OtherError('La cuenta ya esta activada')

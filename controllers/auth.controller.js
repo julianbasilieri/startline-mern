@@ -3,9 +3,10 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const Role = require('../models/role')
 const mayusFirstLetter = require('../utils/mayusFirstLetter')
-const sendMailVerify = require('../utils/mailer')
+const { sendMailVerify, sendMailPassword } = require('../utils/mailer')
 const AuthorizationError = require('../errors/authorizationError')
 const OtherError = require('../errors/otherError')
+const NotFoundError = require('../errors/notFoundError')
 
 const AuthController = {}
 
@@ -29,7 +30,7 @@ AuthController.signUp = async (req, res) => {
 
         const usuarioGuardado = await nuevoUsuario.save()
 
-        const token = jwt.sign({ id: usuarioGuardado._id }, process.env.SECRET, { expiresIn: '1h' })
+        const token = jwt.sign({ _id: usuarioGuardado._id }, process.env.SECRET, { expiresIn: '1h' })
 
         sendMailVerify(nuevoUsuario, token)
 
@@ -62,6 +63,49 @@ AuthController.logIn = async (req, res) => {
         const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '1h' })
 
         return res.json({ success: true, message: 'Usuario logeado correctamente', token, userData: { ...payload } })
+    } catch (error) {
+        return res.status(error.status || 500).json({ success: false, message: error.message })
+    }
+}
+
+AuthController.forgetPassword = async (req, res) => {
+    try {
+        const user = await User.findOne({ email: req.body.email })
+
+        if (!user) throw new NotFoundError('Usuario')
+
+        const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '1h' })
+
+        sendMailPassword(user, token)
+
+        return res.json({ success: true, message: 'Mail enviado correctamente' })
+    } catch (error) {
+        return res.status(error.status || 500).json({ success: false, message: error.message })
+    }
+}
+
+AuthController.changePassword = async (req, res) => {
+    try {
+        const token = req.params.token
+
+        if (!token) throw new AuthorizationError('Token no provider')
+
+        const { _id } = jwt.verify(token, process.env.SECRET)
+        const usuario = await User.findById(_id)
+
+        if (!usuario) throw new NotFoundError('Usuario')
+
+        oldPassword = usuario.password
+        const { newPassword } = req.body
+
+        if (!newPassword) throw new OtherError('Debes ingresar la nueva contraseña')
+        if (bcryptjs.compareSync(newPassword, oldPassword)) throw new OtherError('Las contraseñas deben ser distintas')
+
+        usuario.password = bcryptjs.hashSync(newPassword, 10)
+
+        await usuario.save()
+
+        return res.json({ success: true, message: 'Contraseña modificada correctamente' })
     } catch (error) {
         return res.status(error.status || 500).json({ success: false, message: error.message })
     }
