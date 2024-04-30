@@ -20,7 +20,7 @@ SubjectController.postSubject = async (req, res, next) => {
         const subject = {
             name: req.body.name,
             info: req.body.info,
-            color: req.body.color ? req.body.color : '#' + Math.floor(Math.random() * 16777215).toString(16)
+            color: req.body.color || '#' + Math.floor(Math.random() * 16777215).toString(16)
         }
 
         const nuevoSubject = new Subject(subject)

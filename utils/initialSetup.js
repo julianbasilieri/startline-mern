@@ -11,7 +11,6 @@ const createRoles = async () => {
         const values = await Promise.all([
             new Role({ name: 'admin' }).save(),
             new Role({ name: 'member' }).save(),
-            new Role({ name: 'invited' }).save()
         ])
     } catch (error) {
         console.error(error)

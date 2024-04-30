@@ -7,5 +7,5 @@ mongoose.connect(URI)
 const connection = mongoose.connection
 
 connection.once('open', () => {
-    console.log('Base de datos iniciada en', URI)
+    console.log('Base de datos iniciada')
 })

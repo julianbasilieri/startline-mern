@@ -13,7 +13,7 @@ const AuthController = {}
 AuthController.signUp = async (req, res) => {
     try {
         const { firstname, lastname, username, email, password } = req.body
-        const middlename = req.body.middlename ? req.body.middlename : ''
+        const middlename = req.body.middlename || ''
         const passwordHash = bcryptjs.hashSync(password, 10)
 
         const nuevoUsuario = new User({
@@ -27,7 +27,6 @@ AuthController.signUp = async (req, res) => {
 
         const role = await Role.findOne({ name: 'member' })
         nuevoUsuario.role = role._id
-
         const usuarioGuardado = await nuevoUsuario.save()
 
         const token = jwt.sign({ _id: usuarioGuardado._id }, process.env.SECRET, { expiresIn: '1h' })
@@ -62,7 +61,7 @@ AuthController.logIn = async (req, res) => {
 
         const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '1h' })
 
-        return res.json({ success: true, message: 'Usuario logeado correctamente', token, userData: { ...payload } })
+        return res.json({ success: true, message: 'Usuario logeado correctamente', token, userData: payload })
     } catch (error) {
         return res.status(error.status || 500).json({ success: false, message: error.message })
     }
@@ -88,7 +87,7 @@ AuthController.changePassword = async (req, res) => {
     try {
         const token = req.params.token
 
-        if (!token) throw new AuthorizationError('Token no provider')
+        if (!token) throw new AuthorizationError('Token no provided')
 
         const { _id } = jwt.verify(token, process.env.SECRET)
         const usuario = await User.findById(_id)

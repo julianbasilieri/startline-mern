@@ -7,7 +7,6 @@ const { createRoles, createAdmin } = require('./utils/initialSetup')
 const errorHandler = require('./middlewares/errorHandler')
 const notFound = require('./middlewares/notFound')
 
-
 const app = express()
 createRoles()
 createAdmin()
@@ -22,10 +21,6 @@ app.use(morgan('dev'))
 app.use(helmet())
 
 // Routes
-app.get('/status', (req, res) => {
-    res.json('ok')
-})
-
 app.use('/api/auth', require('./routes/auth.route'))
 app.use('/api/users', require('./routes/users.route'))
 app.use('/api/subjects', require('./routes/subject.route'))

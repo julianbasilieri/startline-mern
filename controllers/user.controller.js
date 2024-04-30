@@ -33,10 +33,7 @@ UsersController.getUsersByUsername = async (req, res, next) => {
 
 UsersController.deleteById = async (req, res, next) => {
     try {
-        // if (req.user._id === req.params.id) throw new OtherError('No puedes eliminarte')
-
-        // const usuario = await Usuario.findByIdAndDelete(req.params.id)
-        const usuario = await Usuario.findById(req.params.id)
+        const usuario = await Usuario.findByIdAndDelete(req.params.id)
 
         if (!usuario) throw new NotFoundError('Usuario')
 
@@ -70,44 +67,28 @@ UsersController.updateById = async (req, res, next) => {
     }
 }
 
-UsersController.darPermisos = async (req, res) => {
+UsersController.togglePermission = async (req, res) => {
     try {
         const usuario = await Usuario.findById(req.params.id)
-
-        if (!usuario) throw new NotFoundError('Usuario')
-
-        const adminRole = await Role.findOne({ name: 'admin' })
-
-        if (usuario.role.toString() === adminRole._id.toString()) throw new OtherError('Ya es admin')
-
-        usuario.role = adminRole._id
-
-        await usuario.save()
-
-        res.json({ success: true, usuario })
-    } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
-    }
-}
-
-UsersController.quitarPermisos = async (req, res) => {
-    try {
-        const usuario = await Usuario.findById(req.params.id)
-
         if (!usuario) throw new NotFoundError('Usuario')
 
         if (usuario._id == req.user._id) throw new OtherError('No puedes quitarte permisos')
 
+        let roleMessage = 'Ahora el usuario es '
         const memberRole = await Role.findOne({ name: 'member' })
         const adminRole = await Role.findOne({ name: 'admin' })
 
-        if (usuario.role.toString() !== adminRole._id.toString()) throw new OtherError('El usuario no es admin')
+        if (usuario.role.toString() === memberRole._id.toString()) {
+            usuario.role = adminRole._id
+            roleMessage += adminRole.name
+        } else if (usuario.role.toString() === adminRole._id.toString()) {
+            usuario.role = memberRole._id
+            roleMessage += memberRole.name
+        }
 
-        usuario.role = memberRole._id
+        usuario.save()
 
-        await usuario.save()
-
-        res.json({ success: true, usuario })
+        res.json({ success: true, usuario, role: roleMessage })
     } catch (error) {
         return res.status(error.status || 500).json({ success: false, message: error.message })
     }
@@ -117,7 +98,7 @@ UsersController.activate = async (req, res) => {
     try {
         const token = req.params.token
 
-        if (!token) throw new AuthorizationError('Token no provider')
+        if (!token) throw new AuthorizationError('Token no provided')
 
         const { _id } = jwt.verify(token, process.env.SECRET)
         const usuario = await Usuario.findById(_id)

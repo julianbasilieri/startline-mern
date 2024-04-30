@@ -12,8 +12,7 @@ router.route('/:id')
     .put([verifyToken, isAdminOrOwner, validateUpdateUser], UsersController.updateById)
     .delete([verifyToken, isAdminOrOwner], UsersController.deleteById)
 
-router.post('/add-permiso/:id', [verifyToken, isAdmin], UsersController.darPermisos)
-router.post('/remove-permiso/:id', [verifyToken, isAdmin], UsersController.quitarPermisos)
+router.post('/toggle-permission/:id', [verifyToken, isAdmin], UsersController.togglePermission)
 router.get('/activate/:token', UsersController.activate)
 
 module.exports = router
