@@ -3,9 +3,9 @@ const Role = require('../models/role')
 const Post = require('../models/post')
 const ForbiddenError = require('../errors/forbiddenError')
 const AuthorizationError = require('../errors/authorizationError')
+const NotFoundError = require('../errors/notFoundError')
 
 function isAdmin(userRole, adminRole) {
-    console.log(userRole.toString() === adminRole.toString())
     return (userRole.toString() === adminRole.toString())
 }
 
@@ -13,10 +13,8 @@ function isOwner(userToUpdate, userToken) {
     return (userToUpdate === userToken)
 }
 
-function postBelongsUser(postOwnerId, userTokenId) {
-    console.log(postOwnerId.toString())
-    console.log(userTokenId.toString())
-    return (postOwnerId.toString() === userTokenId.toString())
+function someBelongsUser(someOwnerId, userTokenId) {
+    return (someOwnerId.toString() === userTokenId.toString())
 }
 
 const authorization = {}
@@ -46,16 +44,26 @@ authorization.isAdmin = async (req, res, next) => {
     }
 }
 
-// postBelongsUser
 authorization.isPostOwner = async (req, res, next) => {
     try {
         const post = await Post.findById(req.params.id)
 
         if (!post) throw new NotFoundError('post')
 
-        // if (post.owner.toString() !== req.user._id.toString()) throw new ForbiddenError()
+        if (someBelongsUser(post.owner, req.user._id)) next()
+        else throw new ForbiddenError()
+    } catch (error) {
+        return res.status(error.status || 500).json({ success: false, message: error.message })
+    }
+}
 
-        if (postBelongsUser(post.owner, req.user._id)) next()
+authorization.isCommentOwner = async (req, res, next) => {
+    try {
+        const comment = await Comment.findById(req.params.id)
+
+        if (!comment) throw new NotFoundError('comment')
+
+        if (someBelongsUser(comment.owner, req.user._id)) next()
         else throw new ForbiddenError()
     } catch (error) {
         return res.status(error.status || 500).json({ success: false, message: error.message })

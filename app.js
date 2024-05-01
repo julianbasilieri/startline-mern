@@ -25,6 +25,7 @@ app.use('/api/auth', require('./routes/auth.route'))
 app.use('/api/users', require('./routes/users.route'))
 app.use('/api/subjects', require('./routes/subject.route'))
 app.use('/api/posts', require('./routes/post.route'))
+app.use('/api/comments', require('./routes/comment.route'))
 
 app.use(errorHandler)
     .use(notFound)

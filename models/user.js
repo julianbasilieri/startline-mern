@@ -3,7 +3,7 @@ const { model, Schema } = require('mongoose')
 const UsuarioSchema = new Schema({
     firstname: {
         type: String,
-        require: true
+        required: true
     },
     middlename: {
         type: String,
@@ -11,7 +11,7 @@ const UsuarioSchema = new Schema({
     },
     lastname: {
         type: String,
-        require: true
+        required: true
     },
     birthdate: {
         type: Date,
@@ -31,18 +31,18 @@ const UsuarioSchema = new Schema({
     },
     username: {
         type: String,
-        require: true,
+        required: true,
         unique: true,
         maxlength: 20
     },
     email: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     password: {
         type: String,
-        require: true
+        required: true
     },
     role: {
         type: Schema.Types.ObjectId,
@@ -54,6 +54,7 @@ const UsuarioSchema = new Schema({
     }
 },
     {
+        versionKey: false,
         timestamps: true
     }
 )

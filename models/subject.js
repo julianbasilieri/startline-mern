@@ -3,19 +3,20 @@ const { model, Schema } = require('mongoose')
 const SubjectSchema = new Schema({
     name: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     info: {
         type: String,
-        require: true
+        required: true
     },
     color: {
         type: String,
-        require: true
+        required: true
     }
 },
     {
+        versionKey: false,
         timestamps: true
     }
 )

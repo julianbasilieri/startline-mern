@@ -1,7 +1,7 @@
-const { check, validationResult } = require('express-validator')
+const { check } = require('express-validator')
 const User = require('../../models/user')
 const UniqueError = require('../../errors/uniqueError')
-const OtherError = require('../../errors/otherError')
+const handleValidationErrors = require('../../utils/handleValidationErrors ')
 
 const userValidate = {}
 
@@ -18,31 +18,13 @@ userValidate.validateNewUser = [
         if (existingUser) throw new UniqueError(`email ${value}`)
     }),
     check('password').notEmpty().withMessage('password es necesaria'),
-    (req, res, next) => {
-        const errors = validationResult(req)
-
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg)
-            throw new OtherError(errorMessages.join(', '))
-        }
-
-        next()
-    }
+    handleValidationErrors
 ]
 
 userValidate.validateLogIn = [
     check('email').trim().isEmail().withMessage('El email es obligatorio'),
     check('password').notEmpty().withMessage('La contraseña es obligatoria'),
-    (req, res, next) => {
-        const errors = validationResult(req)
-
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg)
-            throw new OtherError(errorMessages.join(', '))
-        }
-
-        next()
-    }
+    handleValidationErrors
 ]
 
 userValidate.validateUpdateUser = [
@@ -53,16 +35,7 @@ userValidate.validateUpdateUser = [
     check('photo').optional().trim().notEmpty().isURL().withMessage('photo invalida'),
     check('university').optional().trim().notEmpty().withMessage('university invalida'),
     check('extra_info').optional().trim().notEmpty().withMessage('extra_info invalida'),
-    (req, res, next) => {
-        const errors = validationResult(req)
-
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg)
-            throw new OtherError(errorMessages.join(', '))
-        }
-
-        next()
-    }
+    handleValidationErrors
 ]
 
 module.exports = userValidate

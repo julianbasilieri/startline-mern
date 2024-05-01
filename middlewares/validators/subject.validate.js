@@ -1,7 +1,8 @@
-const { check, validationResult } = require('express-validator')
+const { check } = require('express-validator')
 const Subject = require('../../models/subject')
 const OtherError = require('../../errors/otherError')
 const UniqueError = require('../../errors/uniqueError')
+const handleValidationErrors = require('../../utils/handleValidationErrors ')
 
 const subjectValidate = {}
 
@@ -12,16 +13,7 @@ subjectValidate.validateNewSubject = [
     }),
     check('info').trim().notEmpty().withMessage('info es necesario'),
     check('color').optional().trim().notEmpty().isHexColor().withMessage('color debe ser hexadecimal'),
-    (req, res, next) => {
-        const errors = validationResult(req)
-
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg)
-            throw new OtherError(errorMessages.join(', '))
-        }
-
-        next()
-    }
+    handleValidationErrors
 ]
 
 subjectValidate.validateUpdateSubject = [
@@ -31,16 +23,7 @@ subjectValidate.validateUpdateSubject = [
     }),
     check('info').optional().trim().notEmpty().withMessage('info es necesario'),
     check('color').optional().trim().notEmpty().isHexColor().withMessage('color debe ser hexadecimal'),
-    (req, res, next) => {
-        const errors = validationResult(req)
-
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg)
-            throw new OtherError(errorMessages.join(', '))
-        }
-
-        next()
-    }
+    handleValidationErrors
 ]
 
 module.exports = subjectValidate

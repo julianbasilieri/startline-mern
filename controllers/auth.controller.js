@@ -59,7 +59,7 @@ AuthController.logIn = async (req, res) => {
             role: usuarioEncontrado.role
         }
 
-        const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '1h' })
+        const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '1000h' })
 
         return res.json({ success: true, message: 'Usuario logeado correctamente', token, userData: payload })
     } catch (error) {

@@ -1,9 +1,9 @@
-const { check, validationResult } = require('express-validator')
+const { check } = require('express-validator')
 const Post = require('../../models/post')
 const Subject = require('../../models/subject')
 const UniqueError = require('../../errors/uniqueError')
-const OtherError = require('../../errors/otherError')
 const NotFoundError = require('../../errors/notFoundError')
+const handleValidationErrors = require('../../utils/handleValidationErrors ')
 
 const postValidate = {}
 
@@ -17,16 +17,7 @@ postValidate.validateNewPost = [
         const subject = await Subject.findById(value)
         if (!subject) throw new NotFoundError('subject')
     }),
-    (req, res, next) => {
-        const errors = validationResult(req)
-
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg)
-            throw new OtherError(errorMessages.join(', '))
-        }
-
-        next()
-    }
+    handleValidationErrors
 ]
 
 postValidate.validateUpdatePost = [
@@ -39,16 +30,7 @@ postValidate.validateUpdatePost = [
         const subject = await Subject.findById(value)
         if (!subject) throw new NotFoundError('subject')
     }),
-    (req, res, next) => {
-        const errors = validationResult(req)
-
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg)
-            throw new OtherError(errorMessages.join(', '))
-        }
-
-        next()
-    }
+    handleValidationErrors
 ]
 
 module.exports = postValidate
