@@ -1,4 +1,3 @@
-const Comment = require('./comment');
 const { model, Schema } = require('mongoose');
 
 const PostSchema = new Schema({
@@ -19,7 +18,11 @@ const PostSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Subject',
         required: true
-    }
+    },
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Comment'
+    }]
 },
     {
         versionKey: false,

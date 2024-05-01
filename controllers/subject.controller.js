@@ -8,6 +8,7 @@ const SubjectController = {}
 SubjectController.getAllSubjects = async (req, res, next) => {
     try {
         const subjects = await Subject.find()
+            .populate('posts', 'title')
 
         return res.json({ success: true, subjects })
     } catch (error) {

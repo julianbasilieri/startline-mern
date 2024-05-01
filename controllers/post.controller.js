@@ -1,11 +1,18 @@
 const NotFoundError = require('../errors/notFoundError')
 const Post = require('../models/post')
+const User = require('../models/user');
+const Subject = require('../models/subject');
+const addReferencesToModel = require('../utils/addReferencesToModel');
+const removeReferencesFromModel = require('../utils/removeReferencesFromModel');
 
 const PostController = {}
 
 PostController.getAllPosts = async (req, res, next) => {
     try {
         const posts = await Post.find()
+            .populate('comments', 'content -_id')
+            .populate('owner', 'username photo')
+            .populate('subject', 'name')
 
         return res.json({ success: true, posts })
     } catch (error) {
@@ -35,8 +42,10 @@ PostController.addPost = async (req, res, next) => {
         }
 
         const nuevoPost = new Post(post)
-
         const postGuardado = await nuevoPost.save()
+
+        addReferencesToModel(User, req.user._id, 'posts', postGuardado._id)
+        addReferencesToModel(Subject, req.body.subject, 'posts', postGuardado._id)
 
         return res.json({ success: true, postGuardado })
     } catch (error) {
@@ -49,6 +58,9 @@ PostController.deletePostById = async (req, res, next) => {
         const post = await Post.findByIdAndDelete(req.params.id)
 
         if (!post) throw new NotFoundError('Post')
+
+        removeReferencesFromModel(Subject, 'posts', req.params.id);
+        removeReferencesFromModel(User, 'posts', req.params.id);
 
         return res.json({ success: true, message: 'Post eliminado correctamente' })
     } catch (error) {
