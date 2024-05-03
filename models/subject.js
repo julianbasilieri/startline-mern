@@ -17,8 +17,20 @@ const SubjectSchema = new Schema({
 },
     {
         versionKey: false,
-        timestamps: true
+        timestamps: true,
+        toJSON: {
+            virtuals: true,
+            transform: (doc, ret) => {
+                delete ret.id;
+            }
+        }
     }
 )
+
+SubjectSchema.virtual('posts', {
+    ref: 'Post',
+    localField: '_id',
+    foreignField: 'subject',
+})
 
 module.exports = model('Subject', SubjectSchema)

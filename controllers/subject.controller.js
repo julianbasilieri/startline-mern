@@ -7,7 +7,7 @@ const SubjectController = {}
 
 SubjectController.getAllSubjects = async (req, res, next) => {
     try {
-        const subjects = await Subject.find()
+        const subjects = await Subject.find().populate('posts')
 
         return res.json({ success: true, subjects })
     } catch (error) {
@@ -26,10 +26,9 @@ SubjectController.postSubject = async (req, res, next) => {
         const nuevoSubject = new Subject(subject)
 
         const subjectGuardado = await nuevoSubject.save()
-
         return res.json({ success: true, subjectGuardado })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.status(error.status || 500).json({ success: false, message: error.stack })
     }
 }
 

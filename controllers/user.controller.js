@@ -11,19 +11,16 @@ const UsersController = {}
 
 UsersController.getAllUsers = async (req, res, next) => {
     try {
-        const usuarios = await Usuario.find()
+        const { username, firstname, lastname, university } = req.query
 
-        return res.json({ success: true, usuarios })
-    } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
-    }
-}
+        const filter = {
+            username: { $regex: username || '', $options: 'i' },
+            firstname: { $regex: firstname || '', $options: 'i' },
+            lastname: { $regex: lastname || '', $options: 'i' },
+            university: { $regex: university || '', $options: 'i' }
+        }
 
-UsersController.getUsersByUsername = async (req, res, next) => {
-    try {
-        const usuarios = await Usuario.find({ username: new RegExp(req.params.username, 'i') })
-
-        if (usuarios.length === 0) throw new NotFoundError('usuario')
+        const usuarios = await Usuario.find(filter).populate('posts');
 
         return res.json({ success: true, usuarios })
     } catch (error) {
@@ -54,10 +51,10 @@ UsersController.updateById = async (req, res, next) => {
             university: req.body.university,
             extra_info: req.body.extra_info,
         }
-
+       
         if (!hasSomeParam(usuario)) throw new InvalidDataError()
 
-        const usuarioActualizado = await Usuario.findByIdAndUpdate(req.params.id, usuario, { new: true })
+        const usuarioActualizado = await Usuario.findByIdAndUpdate(req.user._id, usuario, { new: true })
 
         if (!usuarioActualizado) throw new NotFoundError('Usuario')
 

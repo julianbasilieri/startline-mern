@@ -55,8 +55,20 @@ const UsuarioSchema = new Schema({
 },
     {
         versionKey: false,
-        timestamps: true
+        timestamps: true,
+        toJSON: {
+            virtuals: true,
+            transform: (doc, ret) => {
+                delete ret.id;
+            }
+        }
     }
 )
+
+UsuarioSchema.virtual('posts', {
+    ref: 'Post',
+    localField: '_id',
+    foreignField: 'owner'
+})
 
 module.exports = model('User', UsuarioSchema)

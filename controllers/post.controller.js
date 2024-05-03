@@ -5,19 +5,24 @@ const PostController = {}
 
 PostController.getAllPosts = async (req, res, next) => {
     try {
-        const posts = await Post.find()
+        const { title, info } = req.query
 
-        return res.json({ success: true, posts })
-    } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
-    }
-}
+        const filter = {
+            title: { $regex: title || '', $options: 'i' },
+            info: { $regex: info || '', $options: 'i' }
+        }
 
-PostController.getByTitle = async (req, res, next) => {
-    try {
-        const posts = await Post.find({ title: new RegExp(req.params.title, 'i') })
-
-        if (posts.length === 0) throw new NotFoundError('Post')
+        const posts = await Post.find(filter)
+            .populate('owner', 'username photo -_id')
+            .populate('subject', 'name color -_id')
+            .populate({
+                path: 'comments',
+                select: 'content owner createdAt updatedAt -_id',
+                populate: {
+                    path: 'owner',
+                    select: 'username photo -_id',
+                }
+            })
 
         return res.json({ success: true, posts })
     } catch (error) {

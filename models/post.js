@@ -23,7 +23,19 @@ const PostSchema = new Schema({
 },
     {
         versionKey: false,
-        timestamps: true
+        timestamps: true,
+        toJSON: {
+            virtuals: true,
+            transform: (doc, ret) => {
+                delete ret.id;
+            }
+        }
     });
+
+PostSchema.virtual('comments', {
+    ref: 'Comment',
+    localField: '_id',
+    foreignField: 'post'
+})
 
 module.exports = model('Post', PostSchema);
