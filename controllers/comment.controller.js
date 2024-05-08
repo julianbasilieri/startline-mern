@@ -46,9 +46,7 @@ CommentController.deleteCommentById = async (req, res, next) => {
 
 CommentController.updateComment = async (req, res, next) => {
     try {
-        const comment = {
-            content: req.body.content
-        }
+        const comment = { content: req.body.content }
 
         const commentActualizado = await Comment.findOneAndUpdate(req.params.id, comment, { new: true })
 
