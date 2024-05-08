@@ -1,0 +1,135 @@
+.card {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.auth_routes {
+    display: flex;
+    border: 1px solid rgba(221, 221, 221, 1);
+}
+
+.auth_routes a {
+    padding: 10px 55px;
+    border-radius: 15px;
+    background-color: transparent;
+    text-decoration: none;
+    color: black;
+}
+
+.auth_routes a.active {
+    border-radius: 15px;
+    background: linear-gradient(90deg, #003A74, #006AD5);
+    color: white;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.section {
+    display: grid;
+    align-items: center;
+    margin-top: 1%;
+}
+
+.input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #DDDDDD;
+    color: #16161d;
+    box-shadow: 1px 5px 9px rgba(211, 211, 211, .7);
+    width: 100%;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.input:focus {
+    outline: 1px solid #006AD5;
+}
+
+.input:focus:not(.invalid)~.label {
+    color: #006ad5
+}
+
+.label {
+    background-color: white;
+    justify-self: start;
+    transition-property: transform, padding, font-size;
+    transition-duration: 0.3s;
+    margin: 0 1rem;
+    pointer-events: none;
+    color: #16161d;
+}
+
+.label,
+.input {
+    grid-column-start: 1;
+    grid-row-start: 1;
+}
+
+.input:focus~.label,
+.input:not(:placeholder-shown)~.label {
+    transform: translateY(-123%);
+    font-size: 0.8rem;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+}
+
+.section ::placeholder {
+    color: transparent;
+}
+
+.invalid.input {
+    outline: 1px solid red;
+    initial-value: "godd  ";
+}
+
+.invalid.label {
+    color: red;
+}
+
+.error {
+    margin-top: 0.5rem;
+    color: red;
+}
+
+.submit-button {
+    font-size: 20px;
+    color: white;
+    border-radius: 15px;
+    border: none;
+    background-color: #003A74;
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background: linear-gradient(-90deg, #003A74, #006AD5);
+    box-shadow: 1px 5px 9px rgba(211, 211, 211, .9);
+    cursor: pointer;
+}
+
+.card a.fp {
+    width: 100%;
+    display: flex;
+    color: #5881D0;
+    justify-content: center;
+}
+
+.auth_routes,
+.back-route {
+    display: flex;
+    width: 100%;
+    border-radius: 15px;
+    margin: 20px 0;
+}
+
+.back-route .back-arrow {
+    cursor: pointer;
+}

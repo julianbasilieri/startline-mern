@@ -17,7 +17,7 @@ PostController.getAllPosts = async (req, res, next) => {
             .populate('subject', 'name color -_id')
             .populate({
                 path: 'comments',
-                select: 'content owner createdAt updatedAt -_id',
+                select: 'content owner createdAt updatedAt',
                 populate: {
                     path: 'owner',
                     select: 'username photo -_id',

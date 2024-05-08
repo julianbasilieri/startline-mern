@@ -1,0 +1,31 @@
+.collapsible {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.collapsible-header {
+    background-color: #f0f0f0;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.collapsible-header p {
+    margin: 0;
+}
+
+.collapsible-content {
+    padding: 10px;
+}
+
+.collapsible-content p {
+    margin: 5px 0;
+}
+
+.collapsible.active .collapsible-content {
+    display: block;
+}
+
+.collapsible.active.collapsible-header {
+    background-color: #f0f0f0;
+}

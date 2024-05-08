@@ -29,7 +29,7 @@ AuthController.signUp = async (req, res) => {
         nuevoUsuario.role = role._id
         const usuarioGuardado = await nuevoUsuario.save()
 
-        const token = jwt.sign({ _id: usuarioGuardado._id }, process.env.SECRET, { expiresIn: '1h' })
+        const token = jwt.sign({ _id: usuarioGuardado._id }, process.env.SECRET, { expiresIn: '365d' })
 
         sendMailVerify(nuevoUsuario, token)
 
@@ -59,7 +59,7 @@ AuthController.logIn = async (req, res) => {
             role: usuarioEncontrado.role
         }
 
-        const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '1000h' })
+        const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '1h' })
 
         return res.json({ success: true, message: 'Usuario logeado correctamente', token, userData: payload })
     } catch (error) {
