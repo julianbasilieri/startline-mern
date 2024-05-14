@@ -29,12 +29,12 @@ userValidate.validateLogIn = [
 
 userValidate.validateUpdateUser = [
     check('firstname').optional().trim().notEmpty().withMessage('firstname invalida'),
-    check('middlename').optional().trim().notEmpty().withMessage('middlename invalida'),
+    check('middlename').optional().trim(),
     check('lastname').optional().trim().notEmpty().withMessage('lastname invalida'),
-    check('birthdate').optional().trim().isDate().withMessage('birthdate invalida'),
+    check('birthdate').optional().trim().isISO8601('yyyy-mm-dd').withMessage('birthdate invalida'),
     check('photo').optional().trim().notEmpty().isURL().withMessage('photo invalida'),
-    check('university').optional().trim().notEmpty().withMessage('university invalida'),
-    check('extra_info').optional().trim().notEmpty().withMessage('extra_info invalida'),
+    check('university').optional().trim(),
+    check('info').optional().trim(),
     handleValidationErrors
 ]
 

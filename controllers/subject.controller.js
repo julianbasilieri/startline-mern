@@ -11,7 +11,7 @@ SubjectController.getAllSubjects = async (req, res, next) => {
 
         return res.json({ success: true, subjects })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -26,9 +26,9 @@ SubjectController.postSubject = async (req, res, next) => {
         const nuevoSubject = new Subject(subject)
 
         const subjectGuardado = await nuevoSubject.save()
-        return res.json({ success: true, subjectGuardado })
+        return res.json({ success: true, subjectGuardado, message: 'Subject creada correctamente' })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.stack })
+        return res.json({ success: false, message: error.stack })
     }
 }
 
@@ -38,9 +38,9 @@ SubjectController.deleteById = async (req, res, next) => {
 
         if (!subject) throw new NotFoundError('Subject')
 
-        return res.json({ success: true, message: 'Subject eliminado correctamente' })
+        return res.json({ success: true, message: 'Subject eliminada correctamente' })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -60,7 +60,7 @@ SubjectController.updateById = async (req, res, next) => {
 
         return res.json({ success: true, message: 'Subject actualizada correctamente', subjectActualizada })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 

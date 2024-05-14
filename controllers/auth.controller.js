@@ -8,6 +8,18 @@ const AuthorizationError = require('../errors/authorizationError')
 const OtherError = require('../errors/otherError')
 const NotFoundError = require('../errors/notFoundError')
 
+function generarContrasena() {
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let contrasena = '';
+
+    for (let i = 0; i < 6; i++) {
+        const indice = Math.floor(Math.random() * caracteres.length);
+        contrasena += caracteres.charAt(indice);
+    }
+
+    return contrasena;
+}
+
 const AuthController = {}
 
 AuthController.signUp = async (req, res) => {
@@ -35,7 +47,7 @@ AuthController.signUp = async (req, res) => {
 
         return res.json({ success: true, message: 'Usuario creado correctamente', user: usuarioGuardado })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -56,6 +68,7 @@ AuthController.logIn = async (req, res) => {
             lastname: usuarioEncontrado.lastname,
             username: usuarioEncontrado.username,
             email,
+            photo: usuarioEncontrado.photo,
             role: usuarioEncontrado.role
         }
 
@@ -63,7 +76,7 @@ AuthController.logIn = async (req, res) => {
 
         return res.json({ success: true, message: 'Usuario logeado correctamente', token, userData: payload })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -75,17 +88,19 @@ AuthController.forgetPassword = async (req, res) => {
 
         const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '1h' })
 
-        sendMailPassword(user, token)
+        const contrasena = generarContrasena()
+
+        sendMailPassword(user, token, contrasena)
 
         return res.json({ success: true, message: 'Mail enviado correctamente' })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
 AuthController.changePassword = async (req, res) => {
     try {
-        const token = req.params.token
+        const { token, contrasena } = req.params
 
         if (!token) throw new AuthorizationError('Token no provided')
 
@@ -95,18 +110,34 @@ AuthController.changePassword = async (req, res) => {
         if (!usuario) throw new NotFoundError('Usuario')
 
         oldPassword = usuario.password
-        const { newPassword } = req.body
 
-        if (!newPassword) throw new OtherError('Debes ingresar la nueva contraseña')
-        if (bcryptjs.compareSync(newPassword, oldPassword)) throw new OtherError('Las contraseñas deben ser distintas')
+        if (!contrasena) throw new OtherError('Debes ingresar la nueva contraseña')
+        if (bcryptjs.compareSync(contrasena, oldPassword)) throw new OtherError('Las contraseñas deben ser distintas')
 
-        usuario.password = bcryptjs.hashSync(newPassword, 10)
+        usuario.password = bcryptjs.hashSync(contrasena, 10)
 
         await usuario.save()
 
         return res.json({ success: true, message: 'Contraseña modificada correctamente' })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
+    }
+}
+
+AuthController.checkToken = async (req, res) => {
+    try {
+        return res.json({ success: true, userData: req.user })
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
+    }
+}
+
+AuthController.checkRol = async (req, res) => {
+    try {
+        console.log('check rol')
+        return res.json({ success: true })
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
     }
 }
 

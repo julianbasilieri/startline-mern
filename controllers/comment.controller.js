@@ -5,11 +5,11 @@ const CommentController = {}
 
 CommentController.getAllComments = async (req, res, next) => {
     try {
-        const coments = await Comment.find()
+        const coments = await Comment.find().populate('post')
 
         return res.json({ success: true, coments })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
 
     }
 }
@@ -26,9 +26,9 @@ CommentController.addComment = async (req, res, next) => {
 
         const commentGuardado = await nuevoComment.save()
 
-        return res.json({ success: true, commentGuardado })
+        return res.json({ success: true, commentGuardado, message: 'Comment creado correctamente' })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -38,9 +38,9 @@ CommentController.deleteCommentById = async (req, res, next) => {
 
         if (!comment) throw new NotFoundError('comment')
 
-        return res.json({ success: true, message: 'Post eliminado correctamente' })
+        return res.json({ success: true, message: 'Comment eliminado correctamente', comment })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -48,13 +48,13 @@ CommentController.updateComment = async (req, res, next) => {
     try {
         const comment = { content: req.body.content }
 
-        const commentActualizado = await Comment.findOneAndUpdate(req.params.id, comment, { new: true })
+        const commentActualizado = await Comment.findByIdAndUpdate(req.params.id, comment, { new: true })
 
         if (!commentActualizado) throw new NotFoundError('comment')
 
-        return res.json({ success: true, postGuardado })
+        return res.json({ success: true, commentActualizado, message: 'Comment actualizado correctamente' })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 

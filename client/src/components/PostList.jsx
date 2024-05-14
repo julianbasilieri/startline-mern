@@ -1,76 +1,168 @@
+import PropTypes from 'prop-types';
 import CommentList from './CommentList';
-import { getElapsedTime } from '../utils/getElapsedTime';
-import '../styles/Post.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import Search from './Search';
+import Post from '../pages/Post';
 import TextareaAutosize from 'react-textarea-autosize';
+import { getElapsedTime } from '../utils/getElapsedTime';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faPaperPlane, faX } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCommentAsync, deletePostAsync, getPostAsync } from '../store/postSlice';
+import '../styles/Post.css';
+// import { getUserByUsernameAsync } from '../store/userSlice';
 
-const PostList = () => {
-    const [posts, setPosts] = useState([]);
+const PostList = ({ postsUsuario }) => {
+    const [commentContents, setCommentContents] = useState('');
+    const { posts } = useSelector((state) => state.post)
+    const { user } = useSelector((state) => state.auth)
+    const { subjects } = useSelector((state) => state.subject)
+    const dispatch = useDispatch()
+    const [editingPostId, setEditingPostId] = useState(null);
+    const [filteredPosts, setFilteredPosts] = useState([]);
 
-    const handleCommentSubmit = (content, post) => {
-        async function addComment(comment) {
-            const prom = axios.post('https://localhost:4000/api/comments', { comment })
-            const { data } = await toast.promise(prom, {
-                loading: 'Verificando',
-                success: (res) => `${res.data.message}`,
-                error: (err) => `${err.response.data.message}`,
-            })
-            console.log(data)
+    const handleCommentSubmit = async (content, post) => {
+        try {
+            await dispatch(addCommentAsync({ content, post }))
+
+            setCommentContents(prevState => ({
+                ...prevState,
+                [post]: '',
+            }));
+        } catch (error) {
+            console.error('Error fetching comments:', error);
         }
-        addComment({ content, post })
-    }
+    };
+
+    const handleChange = (e, postId) => {
+        const { value } = e.target;
+        setCommentContents(prevState => ({
+            ...prevState,
+            [postId]: value,
+        }));
+    };
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const res = await axios.get('http://localhost:4000/api/posts');
-                setPosts(res.data.posts);
+                await dispatch(getPostAsync())
+
             } catch (error) {
                 console.error('Error fetching posts:', error);
             }
         };
-
         fetchPosts();
-    }, []);
+    }, [user])
 
+    const handleEditClick = (postId) => {
+        setEditingPostId(postId);
+    };
+
+    const handleCloseModal = () => {
+        setEditingPostId(null);
+    };
+
+    const handleDeleteClick = async (postId) => {
+        await dispatch(deletePostAsync(postId))
+    }
+
+    const findSubject = (subjectId, subjects) => {
+        const subject = subjects.find(sub => sub._id === subjectId);
+        return subject;
+    };
+
+    // async function handleUser(username) {
+    //     const res = await dispatch(getUserByUsernameAsync(username))
+    //     console.log(res)
+    // }
+
+    const isProfilePage = location.pathname === '/profile';
+
+    const postsMap = !isProfilePage && filteredPosts.length !== 0 ? filteredPosts : postsUsuario || posts
 
     return (
         <div className="post-list">
+            {!isProfilePage &&
+                <Search posts={posts} setFilteredPosts={setFilteredPosts} />
+            }
             <div>
-                {posts.map(post => (
-                    <div key={post._id} className="post-item">
-                        <p className="subject" style={{ backgroundColor: post.subject.color }}>{post.subject.name}</p>
+                {postsMap && subjects && postsMap.map(post => (
+                    < div key={post._id} className="post-item" >
+                        <div className="post-subject" style={{ backgroundColor: post.subject.color || findSubject(post.subject, subjects).color }}>
+                            <p className="subject">
+                                {post.subject.name || findSubject(post.subject, subjects).name}
+                            </p>
+                        </div>
                         <div className="post-header">
                             <div className="user-info">
                                 <img src={post.owner.photo} alt="User Profile" className="user-profile" />
-                                <p className="username">@{post.owner.username}</p>
+                                <div>
+                                    <p className="username">@{post.owner.username}</p>
+                                    <p className="subject-time">{getElapsedTime(post.createdAt)}</p>
+                                </div>
                             </div>
-                            <p className="subject-time">{getElapsedTime(post.createdAt)}</p>
+                            {user && (!post.owner.username || user.username === post.owner.username) && (
+                                <div className="post-actions">
+                                    <button title='Edit Post' className='submit-button' onClick={() => handleEditClick(post._id)}><FontAwesomeIcon icon={faEdit} /></button>
+                                    <button title='Delete Post' className='delete-button' onClick={() => handleDeleteClick(post._id)}><FontAwesomeIcon icon={faX} /></button>
+                                </div>
+                            )}
                         </div>
                         <div className="post-content">
                             <h4 className="post-title">{post.title}</h4>
                             <p className="post-info">{post.info}</p>
                         </div>
-                        {post.comments.length > 0 && (
-                            <div className="post-comments">
-                                <CommentList comments={post.comments} />
-                            </div>
-                        )}
-                        <div className="comment-input">
-                            <TextareaAutosize className='input' placeholder="Comment" />
-                            <button className="submit-button" onClick={() => handleCommentSubmit()}>
+                        {
+                            post.comments && post.comments.length > 0 && (
+                                <div className="post-comments">
+                                    <CommentList comments={post.comments} />
+                                </div>
+                            )
+                        }
+                        < div className="comment-input" >
+                            <TextareaAutosize
+                                className='input textarea'
+                                placeholder="Comment"
+                                value={commentContents[post._id] || ''}
+                                onChange={(e) => handleChange(e, post._id)}
+                            />
+                            <button title='Comment' className="submit-button" onClick={() => handleCommentSubmit(commentContents[post._id], post._id)}>
                                 <FontAwesomeIcon icon={faPaperPlane} />
                             </button>
                         </div>
+
+                        {editingPostId === post._id && (
+                            <>
+                                <div className="overlay" onClick={handleCloseModal}></div>
+                                <div className="modal">
+                                    <Post postId={post._id} title={post.title} info={post.info} subject={{ _id: post.subject._id, name: post.subject.subjectName }} closeModal={handleCloseModal} />
+                                </div>
+                            </>
+                        )}
                     </div>
-                ))}
-            </div>
-        </div>
+                ))
+                }
+            </div >
+        </div >
     );
+};
+
+PostList.propTypes = {
+    postsUsuario: PropTypes.arrayOf(PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        subject: PropTypes.shape({
+            color: PropTypes.string,
+            name: PropTypes.string
+        }).isRequired,
+        owner: PropTypes.shape({
+            photo: PropTypes.string,
+            username: PropTypes.string
+        }).isRequired,
+        createdAt: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        info: PropTypes.string.isRequired,
+        comments: PropTypes.arrayOf(PropTypes.object)
+    }))
 };
 
 export default PostList;

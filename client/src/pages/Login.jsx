@@ -1,16 +1,29 @@
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom';
-import '../styles/AuthForm.css'
-import { useDispatch } from 'react-redux';
-import { loginAsync } from '../store/authSlice';
+import { Link, useNavigate } from 'react-router-dom';
+import '../styles/Form.css'
+import { useDispatch, useSelector } from 'react-redux';
+import { isAdminAsync, loginAsync } from '../store/authSlice';
+import { useEffect } from 'react';
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
-
+    const { user } = useSelector((state) => state.user)
+    const navigate = useNavigate()
     const dispatch = useDispatch()
 
+    useEffect(() => {
+        if (user) {
+            navigate('/')
+        }
+    })
+
     const onSubmit = async data => {
-        dispatch(loginAsync(data))
+        const log = await dispatch(loginAsync(data))
+
+        if (log.payload.success) {
+            await dispatch(isAdminAsync())
+            navigate('/')
+        }
     }
 
     const isLoginPage = location.pathname === '/login';
@@ -28,7 +41,6 @@ const Login = () => {
                         className={`input ${errors.email ? 'invalid' : ''}`}
                         placeholder="Your email"
                         autoComplete="nope"
-                        value={'basilierijulian@gmail.com'}
                         {...register("email", {
                             required: "Email is required",
                             pattern: {
@@ -49,7 +61,6 @@ const Login = () => {
                         className={`input ${errors.password ? 'invalid' : ''}`}
                         placeholder="Your password"
                         autoComplete="nope"
-                        value={'123'}
                         {...register("password", {
                             required: "Password is required"
                         })}

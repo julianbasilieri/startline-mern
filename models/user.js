@@ -25,7 +25,7 @@ const UsuarioSchema = new Schema({
         type: String,
         default: ''
     },
-    extra_info: {
+    info: {
         type: String,
         default: ''
     },

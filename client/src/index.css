@@ -6,8 +6,59 @@ html * {
 }
 
 main {
-    min-height: 80vh;
+    padding: 100px 0 30px 0;
+    min-height: calc(100vh - 70px);
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: rgba(211, 211, 211, .7);
+    
+}
+
+button {
+    font-size: 20px;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background: linear-gradient(-90deg, #003A74, #006AD5);
+    box-shadow: 1px 5px 9px rgba(211, 211, 211, .9);
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(-90deg, #006AD5, #003A74);
+    box-shadow: 1px 5px 9px rgba(0, 0, 0, 0.7);
+}
+
+.cancel-button, .delete-button {
+    background: linear-gradient(-90deg, #A80000, #FF0000);
+    box-shadow: 1px 5px 9px rgba(211, 211, 211, .9);
+    transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+.cancel-button:hover, .delete-button:hover {
+    background: linear-gradient(-90deg, #7A0000, #D50000);
+    box-shadow: 1px 5px 9px rgba(211, 211, 211, .7);
+}
+
+.save-button {
+    background: linear-gradient(-90deg, #008000, #00FF00); /* Cambia los colores a tonalidades de verde */
+    box-shadow: 1px 5px 9px rgba(211, 211, 211, .9);
+    transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+.save-button:hover {
+    background: linear-gradient(-90deg, #005200, #00B300); /* Cambia los colores a tonalidades más oscuras de verde */
+    box-shadow: 1px 5px 9px rgba(211, 211, 211, .7);
+}
+
+
+a {
+    text-decoration: none;
+    color: white;
 }

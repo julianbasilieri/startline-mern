@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const Role = require('../models/role')
 const Post = require('../models/post')
+const Comment = require('../models/comment')
 const ForbiddenError = require('../errors/forbiddenError')
 const AuthorizationError = require('../errors/authorizationError')
 const NotFoundError = require('../errors/notFoundError')
@@ -29,7 +30,10 @@ authorization.verifyToken = async (req, res, next) => {
 
         next()
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        if (error instanceof jwt.JsonWebTokenError) return res.json({ success: false, message: 'Sesión inválida' })
+        if (error instanceof jwt.TokenExpiredError) return res.json({ success: false, message: 'Sesión expirada' })
+
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -40,7 +44,7 @@ authorization.isAdmin = async (req, res, next) => {
         if (isAdmin(req.user.role, adminRole._id)) next()
         else throw new ForbiddenError()
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -53,7 +57,7 @@ authorization.isPostOwner = async (req, res, next) => {
         if (someBelongsUser(post.owner, req.user._id)) next()
         else throw new ForbiddenError()
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -66,7 +70,7 @@ authorization.isCommentOwner = async (req, res, next) => {
         if (someBelongsUser(comment.owner, req.user._id)) next()
         else throw new ForbiddenError()
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -77,7 +81,7 @@ authorization.isAdminOrOwner = async (req, res, next) => {
         if (isAdmin(req.user.role, adminRole._id) || isOwner(req.params.id, req.user._id)) next()
         else throw new ForbiddenError()
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 

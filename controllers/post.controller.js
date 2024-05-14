@@ -5,16 +5,16 @@ const PostController = {}
 
 PostController.getAllPosts = async (req, res, next) => {
     try {
-        const { title, info } = req.query
+        const { title, info, username } = req.query
 
         const filter = {
             title: { $regex: title || '', $options: 'i' },
-            info: { $regex: info || '', $options: 'i' }
+            info: { $regex: info || '', $options: 'i' },
         }
 
         const posts = await Post.find(filter)
-            .populate('owner', 'username photo -_id')
-            .populate('subject', 'name color -_id')
+            .populate('owner', 'username photo _id')
+            .populate('subject', 'name color _id')
             .populate({
                 path: 'comments',
                 select: 'content owner createdAt updatedAt',
@@ -26,7 +26,7 @@ PostController.getAllPosts = async (req, res, next) => {
 
         return res.json({ success: true, posts })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -43,9 +43,9 @@ PostController.addPost = async (req, res, next) => {
 
         const postGuardado = await nuevoPost.save()
 
-        return res.json({ success: true, postGuardado })
+        return res.json({ success: true, postGuardado, message: 'Post creado correctamente' })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -55,9 +55,9 @@ PostController.deletePostById = async (req, res, next) => {
 
         if (!post) throw new NotFoundError('Post')
 
-        return res.json({ success: true, message: 'Post eliminado correctamente' })
+        return res.json({ success: true, message: 'Post eliminado correctamente', post})
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -73,9 +73,9 @@ PostController.updatePostById = async (req, res, next) => {
 
         if (!postActualizado) throw new NotFoundError('Post')
 
-        return res.json({ success: true, message: 'Post actualizado correctamente' })
+        return res.json({ success: true, message: 'Post actualizado correctamente', postActualizado})
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 

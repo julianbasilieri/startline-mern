@@ -1,7 +1,47 @@
 import PropTypes from 'prop-types';
 import { getElapsedTime } from '../utils/getElapsedTime';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDeleteLeft, faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
+import { deleteCommentAsync, updateCommentAsync } from '../store/postSlice';
+import TextareaAutosize from 'react-textarea-autosize';
 
 const CommentList = ({ comments }) => {
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editedCommentContent, setEditedCommentContent] = useState('');
+    const { user } = useSelector((state) => state.auth)
+    const dispatch = useDispatch()
+
+    const handleEditClick = (commentId, content) => {
+        console.log('edit')
+        console.log(comments)
+        setEditedCommentContent(content)
+        setEditingCommentId(commentId);
+    };
+    const handleEditChange = (event) => {
+        setEditedCommentContent(event.target.value);
+    };
+
+    const handleSaveEdit = async (commentId) => {
+        try {
+            console.log('comment', editedCommentContent)
+            await dispatch(updateCommentAsync({ commentId, comment: { content: editedCommentContent } }));
+            setEditingCommentId(null);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleDeleteClick = async (commentId) => {
+        console.log('delete')
+        try {
+            await dispatch(deleteCommentAsync(commentId))
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <div className="comment-list">
             <h5>Comments:</h5>
@@ -10,14 +50,32 @@ const CommentList = ({ comments }) => {
                     <div key={comment._id} className="comment-item">
                         <div className="comment-header">
                             <div className="user-info">
-                                <img src={comment.owner.photo} alt="User Profile" className="user-profile-comment" />
-                                <p className="username">{comment.owner.username}</p>
+                                <img src={comment.owner.photo || user.photo} alt="User Profile" className="user-profile-comment" />
+                                <p className="username">{comment.owner.username || user.username}</p>
                             </div>
                             <p className="comment-time">{getElapsedTime(comment.createdAt)}</p>
                         </div>
                         <div className="comment-content">
-                            <p>{comment.content}</p>
+                            {editingCommentId === comment._id ? (
+                                <TextareaAutosize
+                                    className='input textarea'
+                                    value={editedCommentContent}
+                                    onChange={handleEditChange}
+                                />
+                            ) : (
+                                <p>{comment.content}</p>
+                            )}
                         </div>
+                        {user && (!comment.owner.username || user.username === comment.owner.username) && (
+                            <div className="comment-actions">
+                                {editingCommentId === comment._id ? (
+                                    <button title='Save Comment' className="save-button" onClick={() => handleSaveEdit(comment._id)}><FontAwesomeIcon icon={faSave} /></button>
+                                ) : (
+                                    <button title='Edit Comment' className='submit-button' onClick={() => handleEditClick(comment._id, comment.content)}><FontAwesomeIcon icon={faEdit} /></button>
+                                )}
+                                <button title='Delete Comment' className='delete-button' onClick={() => handleDeleteClick(comment._id)}><FontAwesomeIcon icon={faDeleteLeft} /></button>
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>

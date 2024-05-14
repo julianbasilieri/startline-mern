@@ -1,10 +1,14 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
-import '../styles/AuthForm.css'
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import '../styles/Form.css'
 
 const Signup = () => {
     const { register, handleSubmit, formState: { errors }, getValues } = useForm();
+    const { user } = useSelector((state) => state.user)
+    const navigate = useNavigate()
 
     const onSubmit = async data => {
         try {
@@ -14,6 +18,12 @@ const Signup = () => {
             console.error(error.response.data)
         }
     }
+
+    useEffect(() => {
+        if (user) {
+            navigate('/')
+        }
+    })
 
     const isSignupPage = location.pathname === '/signup';
 

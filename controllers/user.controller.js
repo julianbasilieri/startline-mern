@@ -24,7 +24,7 @@ UsersController.getAllUsers = async (req, res, next) => {
 
         return res.json({ success: true, usuarios })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -36,7 +36,7 @@ UsersController.deleteById = async (req, res, next) => {
 
         return res.json({ success: true, message: 'Usuario eliminado correctamente' })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -49,7 +49,7 @@ UsersController.updateById = async (req, res, next) => {
             birthdate: req.body.birthdate,
             photo: req.body.photo,
             university: req.body.university,
-            extra_info: req.body.extra_info,
+            info: req.body.info,
         }
        
         if (!hasSomeParam(usuario)) throw new InvalidDataError()
@@ -60,7 +60,7 @@ UsersController.updateById = async (req, res, next) => {
 
         return res.json({ success: true, message: 'Usuario actualizado correctamente', usuarioActualizado })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -85,9 +85,9 @@ UsersController.togglePermission = async (req, res) => {
 
         usuario.save()
 
-        res.json({ success: true, usuario, role: roleMessage })
+        res.json({ success: true, usuario, role: roleMessage, message: 'Permisos modificados' })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
@@ -109,7 +109,7 @@ UsersController.activate = async (req, res) => {
 
         res.json({ success: true, message: 'Usuario activado' })
     } catch (error) {
-        return res.status(error.status || 500).json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message })
     }
 }
 
