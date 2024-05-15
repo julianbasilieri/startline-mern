@@ -4,7 +4,7 @@ import { handleToast } from "../utils/toast";
 
 export const getPostAsync = createAsyncThunk('post/getPostAsync', async () => {
     try {
-        const { data } = await axios.get('http://localhost:4000/api/posts')
+        const { data } = await axios.get('/api/posts')
 
         return data;
     } catch (error) {
@@ -15,7 +15,7 @@ export const getPostAsync = createAsyncThunk('post/getPostAsync', async () => {
 export const addPostAsync = createAsyncThunk('post/addPostAsync', async (post) => {
     try {
         const token = localStorage.getItem('token')
-        const { data } = await axios.post('http://localhost:4000/api/posts', post, {
+        const { data } = await axios.post('/api/posts', post, {
             headers: {
                 Authorization: token
             }
@@ -33,7 +33,7 @@ export const addPostAsync = createAsyncThunk('post/addPostAsync', async (post) =
 export const updatePostAsync = createAsyncThunk('post/updatePostAsync', async ({ postId, info }) => {
     try {
         const token = localStorage.getItem('token')
-        const { data } = await axios.put(`http://localhost:4000/api/posts/${postId}`, info, {
+        const { data } = await axios.put(`/api/posts/${postId}`, info, {
             headers: {
                 Authorization: token
             }
@@ -50,7 +50,7 @@ export const updatePostAsync = createAsyncThunk('post/updatePostAsync', async ({
 export const deletePostAsync = createAsyncThunk('post/deletePostAsync', async (postId) => {
     try {
         const token = localStorage.getItem('token')
-        const { data } = await axios.delete(`http://localhost:4000/api/posts/${postId}`, {
+        const { data } = await axios.delete(`/api/posts/${postId}`, {
             headers: {
                 Authorization: token
             }
@@ -67,7 +67,7 @@ export const deletePostAsync = createAsyncThunk('post/deletePostAsync', async (p
 export const addCommentAsync = createAsyncThunk('post/addCommentAsync', async (comment) => {
     try {
         const token = localStorage.getItem('token')
-        const { data } = await axios.post('http://localhost:4000/api/comments', comment, {
+        const { data } = await axios.post('/api/comments', comment, {
             headers: {
                 Authorization: token
             }
@@ -85,7 +85,7 @@ export const addCommentAsync = createAsyncThunk('post/addCommentAsync', async (c
 export const updateCommentAsync = createAsyncThunk('post/updateCommentAsync', async ({ commentId, comment }) => {
     try {
         const token = localStorage.getItem('token')
-        const { data } = await axios.put(`http://localhost:4000/api/comments/${commentId}`, comment, {
+        const { data } = await axios.put(`/api/comments/${commentId}`, comment, {
             headers: {
                 Authorization: token
             }
@@ -103,7 +103,7 @@ export const updateCommentAsync = createAsyncThunk('post/updateCommentAsync', as
 export const deleteCommentAsync = createAsyncThunk('post/deleteCommentAsync', async (commentId) => {
     try {
         const token = localStorage.getItem('token')
-        const { data } = await axios.delete(`http://localhost:4000/api/comments/${commentId}`, {
+        const { data } = await axios.delete(`/api/comments/${commentId}`, {
             headers: {
                 Authorization: token
             }

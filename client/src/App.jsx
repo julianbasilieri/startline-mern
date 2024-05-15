@@ -20,6 +20,8 @@ import ProtectedRouteAdmin from './components/ProtectedRouteAdmin';
 import ProtectedRouteUser from './components/ProtectedRouteUser';
 import { deleteUser, getUserAsync } from './store/userSlice';
 import { getSubjectsAsync } from './store/subjectSlice';
+import axios from 'axios';
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 
 const App = () => {
     const token = localStorage.getItem('token')

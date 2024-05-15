@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const getUserAsync = createAsyncThunk('user/getUserAsync', async (username) => {
     try {
-        const { data } = await axios.get(`http://localhost:4000/api/users?username=${username}`)
+        const { data } = await axios.get(`/api/users?username=${username}`)
         return data;
     } catch (error) {
         return error.response.data;
@@ -12,7 +12,7 @@ export const getUserAsync = createAsyncThunk('user/getUserAsync', async (usernam
 
 export const getUserByUsernameAsync = createAsyncThunk('user/getUserByUsernameAsync', async (username) => {
     try {
-        const { data } = await axios.get(`http://localhost:4000/api/users?username=${username}`)
+        const { data } = await axios.get(`/api/users?username=${username}`)
         return data;
     } catch (error) {
         return error.response.data;

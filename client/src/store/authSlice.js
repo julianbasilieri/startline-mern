@@ -4,7 +4,7 @@ import { toastProm } from "../utils/toastProm";
 import { handleToast } from "../utils/toast";
 export const loginAsync = createAsyncThunk('auth/loginAsync', async (credentials) => {
     try {
-        const prom = axios.post('http://localhost:4000/api/auth/login', credentials)
+        const prom = axios.post('/api/auth/login', credentials)
         const { data } = await toastProm(prom)
 
         return data
@@ -15,7 +15,7 @@ export const loginAsync = createAsyncThunk('auth/loginAsync', async (credentials
 
 export const singUpAsync = createAsyncThunk('auth/singUpAsync', async (credentials) => {
     try {
-        const prom = await axios.post('http://localhost:4000/api/auth/signup', credentials)
+        const prom = await axios.post('/api/auth/signup', credentials)
         const { data } = await toastProm(prom)
 
         return data
@@ -27,7 +27,7 @@ export const singUpAsync = createAsyncThunk('auth/singUpAsync', async (credentia
 export const updateUserAsync = createAsyncThunk('auth/updateUserAsync', async (user) => {
     try {
         const token = localStorage.getItem('token')
-        const { data } = await axios.put(`http://localhost:4000/api/users`, user,
+        const { data } = await axios.put(`/api/users`, user,
             {
                 headers: {
                     Authorization: token
@@ -44,7 +44,7 @@ export const updateUserAsync = createAsyncThunk('auth/updateUserAsync', async (u
 export const isAdminAsync = createAsyncThunk('auth/isAdminAsync', async () => {
     try {
         const token = localStorage.getItem('token')
-        const { data } = await axios.get('http://localhost:4000/api/auth/check-rol', {
+        const { data } = await axios.get('/api/auth/check-rol', {
             headers: {
                 Authorization: token
             }
@@ -60,7 +60,7 @@ export const isAdminAsync = createAsyncThunk('auth/isAdminAsync', async () => {
 export const checkTokenAsync = createAsyncThunk('auth/checkTokenAsync', async () => {
     try {
         const token = localStorage.getItem('token')
-        const { data } = await axios.get('http://localhost:4000/api/auth/check-token', {
+        const { data } = await axios.get('/api/auth/check-token', {
             headers: {
                 Authorization: token
             }

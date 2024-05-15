@@ -4,7 +4,7 @@ import { handleToast } from "../utils/toast";
 
 export const getSubjectsAsync = createAsyncThunk('subjects/getSubjectsAsync', async () => {
     try {
-        const { data } = await axios.get('http://localhost:4000/api/subjects')
+        const { data } = await axios.get('/api/subjects')
 
         return data;
     } catch (error) {
@@ -15,7 +15,7 @@ export const getSubjectsAsync = createAsyncThunk('subjects/getSubjectsAsync', as
 export const postSubjectsAsync = createAsyncThunk('subjects/postSubjectsAsync', async (subject) => {
     try {
         const token = localStorage.getItem('token')
-        const { data } = await axios.post('http://localhost:4000/api/subjects', subject, {
+        const { data } = await axios.post('/api/subjects', subject, {
             headers: {
                 Authorization: token
             }
@@ -31,7 +31,7 @@ export const updateSubjectsAsync = createAsyncThunk('subjects/updateSubjectsAsyn
     try {
         console.log('subject', subject)
         const token = localStorage.getItem('token')
-        const { data } = await axios.put(`http://localhost:4000/api/subjects/${subjectId}`, subject, {
+        const { data } = await axios.put(`/api/subjects/${subjectId}`, subject, {
             headers: {
                 Authorization: token
             }
@@ -46,7 +46,7 @@ export const updateSubjectsAsync = createAsyncThunk('subjects/updateSubjectsAsyn
 export const deleteSubjectsAsync = createAsyncThunk('subjects/deleteSubjectsAsync', async (subjectId) => {
     try {
         const token = localStorage.getItem('token')
-        const { data } = await axios.delete(`http://localhost:4000/api/subjects/${subjectId}`, {
+        const { data } = await axios.delete(`/api/subjects/${subjectId}`, {
             headers: {
                 Authorization: token
             }
