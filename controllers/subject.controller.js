@@ -1,7 +1,7 @@
 const InvalidDataError = require('../errors/invalidDataError')
 const NotFoundError = require('../errors/notFoundError')
 const Subject = require('../models/subject')
-const hasSomeParam = require('../utils/hasSomeparam')
+const hasSomeParam = require('../utils/hasSomeParam')
 
 const SubjectController = {}
 
