@@ -12,7 +12,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     color: black;
-    background-image: url('back-post.jpg');
+    background-image: url('../../public/back-post.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
