@@ -38,7 +38,7 @@ SubjectController.deleteById = async (req, res, next) => {
 
         if (!subject) throw new NotFoundError('Subject')
 
-        return res.json({ success: true, message: 'Subject eliminada correctamente' })
+        return res.json({ success: true, message: 'Subject eliminada correctamente', subject })
     } catch (error) {
         return res.json({ success: false, message: error.message })
     }

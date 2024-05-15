@@ -1,13 +1,13 @@
 .banner {
     width: 100vw;
     height: 80vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../../public/Science-Background.jpg');
     background-size: cover;
     background-position: center;
     display: flex;
     justify-content: center;
     position: relative;
     top: -100px;
+    animation: changeBackground 10s infinite;
 }
 
 .content {
@@ -47,5 +47,25 @@
 @media screen and (max-width: 768px) {
     .home-buttons {
         flex-wrap: wrap;
+    }
+}
+
+
+@keyframes changeBackground {
+    0%, 100% {
+        animation: backwards;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('background1.jpg');
+    }
+
+    25% {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('background2.avif');
+    }
+
+    50% {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('background3.avif');
+    }
+
+    75% {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('background4.avif');
     }
 }

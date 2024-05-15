@@ -3,7 +3,7 @@ import { getElapsedTime } from '../utils/getElapsedTime';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDeleteLeft, faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { deleteCommentAsync, updateCommentAsync } from '../store/postSlice';
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -44,14 +44,14 @@ const CommentList = ({ comments }) => {
 
     return (
         <div className="comment-list">
-            <h5>Comments:</h5>
+            <h5 style={{fontSize: '17px'}}>Comments:</h5>
             <div className="comments-container">
                 {comments.map(comment => (
                     <div key={comment._id} className="comment-item">
                         <div className="comment-header">
                             <div className="user-info">
                                 <img src={comment.owner.photo || user.photo} alt="User Profile" className="user-profile-comment" />
-                                <p className="username">{comment.owner.username || user.username}</p>
+                                <p className="username">@{comment.owner.username || user.username}</p>
                             </div>
                             <p className="comment-time">{getElapsedTime(comment.createdAt)}</p>
                         </div>
@@ -63,7 +63,7 @@ const CommentList = ({ comments }) => {
                                     onChange={handleEditChange}
                                 />
                             ) : (
-                                <p>{comment.content}</p>
+                                <p className='comment-info'>{comment.content}</p>
                             )}
                         </div>
                         {user && (!comment.owner.username || user.username === comment.owner.username) && (
@@ -73,7 +73,7 @@ const CommentList = ({ comments }) => {
                                 ) : (
                                     <button title='Edit Comment' className='submit-button' onClick={() => handleEditClick(comment._id, comment.content)}><FontAwesomeIcon icon={faEdit} /></button>
                                 )}
-                                <button title='Delete Comment' className='delete-button' onClick={() => handleDeleteClick(comment._id)}><FontAwesomeIcon icon={faDeleteLeft} /></button>
+                                <button title='Delete Comment' className='delete-button' onClick={() => handleDeleteClick(comment._id)}><FontAwesomeIcon icon={faTrash} /></button>
                             </div>
                         )}
                     </div>

@@ -2,8 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { handleToast } from "../utils/toast";
 
-const token = localStorage.getItem('token')
-
 export const getPostAsync = createAsyncThunk('post/getPostAsync', async () => {
     try {
         const { data } = await axios.get('http://localhost:4000/api/posts')
@@ -16,6 +14,7 @@ export const getPostAsync = createAsyncThunk('post/getPostAsync', async () => {
 
 export const addPostAsync = createAsyncThunk('post/addPostAsync', async (post) => {
     try {
+        const token = localStorage.getItem('token')
         const { data } = await axios.post('http://localhost:4000/api/posts', post, {
             headers: {
                 Authorization: token
@@ -23,7 +22,6 @@ export const addPostAsync = createAsyncThunk('post/addPostAsync', async (post) =
         })
 
         handleToast(data)
-
 
         return data;
     } catch (error) {
@@ -34,6 +32,7 @@ export const addPostAsync = createAsyncThunk('post/addPostAsync', async (post) =
 
 export const updatePostAsync = createAsyncThunk('post/updatePostAsync', async ({ postId, info }) => {
     try {
+        const token = localStorage.getItem('token')
         const { data } = await axios.put(`http://localhost:4000/api/posts/${postId}`, info, {
             headers: {
                 Authorization: token
@@ -50,6 +49,7 @@ export const updatePostAsync = createAsyncThunk('post/updatePostAsync', async ({
 
 export const deletePostAsync = createAsyncThunk('post/deletePostAsync', async (postId) => {
     try {
+        const token = localStorage.getItem('token')
         const { data } = await axios.delete(`http://localhost:4000/api/posts/${postId}`, {
             headers: {
                 Authorization: token
@@ -66,6 +66,7 @@ export const deletePostAsync = createAsyncThunk('post/deletePostAsync', async (p
 
 export const addCommentAsync = createAsyncThunk('post/addCommentAsync', async (comment) => {
     try {
+        const token = localStorage.getItem('token')
         const { data } = await axios.post('http://localhost:4000/api/comments', comment, {
             headers: {
                 Authorization: token
@@ -73,7 +74,7 @@ export const addCommentAsync = createAsyncThunk('post/addCommentAsync', async (c
         })
 
         handleToast(data)
-        
+
         return data;
     } catch (error) {
         return error.response.data;
@@ -83,6 +84,7 @@ export const addCommentAsync = createAsyncThunk('post/addCommentAsync', async (c
 
 export const updateCommentAsync = createAsyncThunk('post/updateCommentAsync', async ({ commentId, comment }) => {
     try {
+        const token = localStorage.getItem('token')
         const { data } = await axios.put(`http://localhost:4000/api/comments/${commentId}`, comment, {
             headers: {
                 Authorization: token
@@ -100,6 +102,7 @@ export const updateCommentAsync = createAsyncThunk('post/updateCommentAsync', as
 
 export const deleteCommentAsync = createAsyncThunk('post/deleteCommentAsync', async (commentId) => {
     try {
+        const token = localStorage.getItem('token')
         const { data } = await axios.delete(`http://localhost:4000/api/comments/${commentId}`, {
             headers: {
                 Authorization: token
@@ -122,10 +125,8 @@ const postSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getPostAsync.fulfilled, (state, action) => {
             if (action.payload.success) state.posts = action.payload.posts;
-            console.log(state.posts)
         })
             .addCase(addPostAsync.fulfilled, (state, action) => {
-                console.log('postsguardadp', action.payload.postGuardado)
                 if (action.payload.success) state.posts.push(action.payload.postGuardado);
             })
             .addCase(updatePostAsync.fulfilled, (state, action) => {
@@ -137,7 +138,6 @@ const postSlice = createSlice({
                 }
             })
             .addCase(deletePostAsync.fulfilled, (state, action) => {
-                console.log(action)
                 if (action.payload.success) {
                     state.posts = state.posts.filter(post => post._id !== action.payload.post._id);
                 }
@@ -177,6 +177,5 @@ const postSlice = createSlice({
             })
     }
 });
-
 
 export default postSlice.reducer

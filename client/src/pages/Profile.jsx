@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import PostList from '../components/PostList';
 import { getPostAsync } from '../store/postSlice';
-import { forcedLogin } from '../store/authSlice';
 import { useEffect } from 'react';
 import '../styles/Profile.css'
 import { useNavigate } from 'react-router-dom'
@@ -22,7 +21,6 @@ const Profile = () => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                if (!user) await dispatch(forcedLogin())
                 if (!posts) await dispatch(getPostAsync())
                 if (user) await dispatch(getUserAsync(user.username))
             } catch (error) {

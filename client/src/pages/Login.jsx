@@ -57,7 +57,7 @@ const Login = () => {
 
                 <div className="section">
                     <input
-                        type="text"
+                        type="password"
                         className={`input ${errors.password ? 'invalid' : ''}`}
                         placeholder="Your password"
                         autoComplete="nope"

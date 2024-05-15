@@ -20,7 +20,7 @@ export const getUserByUsernameAsync = createAsyncThunk('user/getUserByUsernameAs
 })
 
 const userSlice = createSlice({
-    name: "subject",
+    name: "user",
     initialState: {
         userComplete: null
     },

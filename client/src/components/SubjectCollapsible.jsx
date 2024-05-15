@@ -1,35 +1,25 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import SubjectForm from './SubjectForm';
 import '../styles/Subject.css';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteSubjectsAsync } from '../store/subjectSlice';
 
 const SubjectCollapsible = () => {
-    const [subjects, setSubjects] = useState([]);
     const [activeIndex, setActiveIndex] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const { isAdmin } = useSelector((state) => state.auth)
-    const navigate = useNavigate()
+    const [editingSubject, setEditingSubject] = useState(null);
+    const [selectedSubjectId, setSelectedSubjectId] = useState(null);
+    const { subjects } = useSelector((state) => state.subject);
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        if (!isAdmin) {
-            toast.error('No tienes permisos')
-            return navigate('/')
+        if (activeIndex !== null) {
+            const subjectId = subjects[activeIndex]._id;
+            setSelectedSubjectId(subjectId);
         }
-
-        const fetchSubjects = async () => {
-            try {
-                const res = await axios.get('http://localhost:4000/api/subjects');
-                setSubjects(res.data.subjects);
-            } catch (error) {
-                console.error('Error fetching subjects:', error);
-            }
-        };
-
-        fetchSubjects();
-    }, []);
+    }, [activeIndex, subjects]);
 
     const handleToggle = (index) => {
         setActiveIndex(activeIndex === index ? null : index);
@@ -39,18 +29,17 @@ const SubjectCollapsible = () => {
         setShowModal(true);
     };
 
-    const handleCloseModal = () => {
-        setShowModal(false);
+    const handleEditSubject = (subject) => {
+        setEditingSubject(subject);
+        setShowModal(true);
     };
 
-    const handleSubmitSubject = async (newSubjectData) => {
-        try {
-            const res = await axios.post('http://localhost:4000/api/subjects', newSubjectData);
-            setSubjects([...subjects, res.data.subject]);
-            setShowModal(false);
-        } catch (error) {
-            console.error('Error adding new subject:', error);
-        }
+    const handleDeleteSubject = (subjectId) => {
+        dispatch(deleteSubjectsAsync(subjectId))
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
     };
 
     return (
@@ -58,25 +47,22 @@ const SubjectCollapsible = () => {
             <div className="add-subject">
                 <button title='Agregar Subject' onClick={handleAddSubject}>+</button>
             </div>
-            {showModal && (
-                <>
-                    <div className="overlay" onClick={handleCloseModal}></div>
-                    <div className="modal">
-                        <div className="modal-content">
-                            <SubjectForm handleCloseModal={handleCloseModal} onSubmit={handleSubmitSubject} />
-                        </div>
-                    </div>
-                </>
-            )}
-            {subjects.map((subject, index) => (
+            {subjects && subjects.map((subject, index) => (
                 <div key={subject._id} className="collapsible">
                     <div className="collapsible-header" style={{ backgroundColor: subject.color }} onClick={() => handleToggle(index)}>
                         <div className="subject-info">
-                            <div className="subject-name" >
-                                {subject.name}
+                            <div className="subject-name">
+                                {subject?.name}
                             </div>
-                            <div className="post-count">
-                                <div className="post-circle">{subject.posts.length}</div>
+                            <div className='subject-extra'>
+                                <div className="post-count">
+                                    <div className="post-circle">{subject.posts.length}</div>
+                                </div>
+                                <div className="post-actions">
+                                    <button title='Editar Subject' className='edit-button' onClick={() => handleEditSubject(subject)}><FontAwesomeIcon icon={faEdit} /></button>
+                                    <button title='Eliminar Subject' className='delete-button' disabled={subject.posts.length > 0} onClick={() => handleDeleteSubject(subject._id)}><FontAwesomeIcon icon={faTrash} /></button>
+                                    {console.log('posts', subject.posts.length === 0)}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -91,6 +77,16 @@ const SubjectCollapsible = () => {
                     )}
                 </div>
             ))}
+            {showModal && (
+                <>
+                    <div className="overlay" onClick={handleCloseModal}></div>
+                    <div className="modal">
+                        <div className="modal-content">
+                            <SubjectForm subjectId={selectedSubjectId} handleCloseModal={handleCloseModal} editingSubject={editingSubject} />
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     );
 };

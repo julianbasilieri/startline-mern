@@ -2,39 +2,38 @@
     background-color: #333;
     color: #FBF9F9;
     text-align: center;
-  }
-  
-  .footer__container {
+}
+
+.footer__container {
     padding: 3rem 0;
-  }
-  
-  .footer__title {
+}
+
+.footer__title {
     font-size: 2.25rem;
     margin-bottom: 1rem;
     font-weight: 600;
-  }
-  
-  .footer__description {
+}
+
+.footer__description {
     margin-bottom: 1.5rem;
-  }
-  
-  .footer__social {
+}
+
+.footer__social {
     margin-bottom: 3rem;
-  }
-  
-  .footer__link {
+}
+
+.footer__link {
     font-size: 1.4rem;
     color: #FBF9F9;
     margin: 0 1rem;
     transition: .3s;
-  }
-  
-  .footer__link:hover {
+}
+
+.footer__link:hover {
     color: #7B6F71;
-  }
-  
-  .footer__copy {
+}
+
+.footer__copy {
     font-size: 0.813rem;
     color: #FBF9F9;
-  }
-  
+}

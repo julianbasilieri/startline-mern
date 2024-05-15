@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { faAdd, faHome, faRightFromBracket, faSearch, faTheaterMasks, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../styles/SideBar.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/authSlice';
 import { deleteUser } from '../store/userSlice';
+import SidebarItem from './SideBarItem';
 
 const Sidebar = ({ isOpen, toggle }) => {
     const dispatch = useDispatch()
@@ -22,7 +23,7 @@ const Sidebar = ({ isOpen, toggle }) => {
     return (
         <div id="sidebar" className={isOpen ? 'active' : ''}>
             <div className="list-items">
-                <div className="sidebar-item">
+                {/* <div className="sidebar-item">
                     <Link to="/" onClick={() => toggle(!isOpen)}>
                         <FontAwesomeIcon className='icon' icon={faHome} />
                         <p>Home</p>
@@ -45,14 +46,22 @@ const Sidebar = ({ isOpen, toggle }) => {
                         <FontAwesomeIcon className='icon' icon={faUser} />
                         <p>Profile</p>
                     </Link>
+                </div> */}
+
+                <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+                    <SidebarItem to="/" icon={faHome} text="Home" onClick={toggle} />
+                    <SidebarItem to="/search" icon={faSearch} text="Search" onClick={toggle} />
+                    <SidebarItem to="/new-post" icon={faAdd} text="New Post" onClick={toggle} />
+                    <SidebarItem to="/profile" icon={faUser} text="Profile" onClick={toggle} />
                 </div>
                 {isAdmin &&
-                    < div className="sidebar-item">
-                        <Link to="/subjects" onClick={() => toggle(!isOpen)}>
-                            <FontAwesomeIcon className='icon' icon={faTheaterMasks} />
-                            <p>Subjects</p>
-                        </Link>
-                    </div>
+                    // < div className="sidebar-item">
+                    //     <Link to="/subjects" onClick={() => toggle(!isOpen)}>
+                    //         <FontAwesomeIcon className='icon' icon={faTheaterMasks} />
+                    //         <p>Subjects</p>
+                    //     </Link>
+                    // </div>
+                    <SidebarItem to="/subjects" icon={faTheaterMasks} text="Subjects" onClick={toggle} />
                 }
             </div>
             <div className="bottom-items">

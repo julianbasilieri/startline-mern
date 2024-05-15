@@ -5,18 +5,18 @@ import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { getUserAsync } from '../store/userSlice';
-import { forcedLogin } from '../store/authSlice';
 import '../styles/NavBar.css';
+import { checkTokenAsync } from '../store/authSlice';
 
 const NavBar = () => {
-    const [sidebarOpen, setSidebarOpen] = useState(false); 
-    const { user } = useSelector((state) => state.auth);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const dispatch = useDispatch()
+    const { user } = useSelector((state) => state.auth);
+    const { userComplete } = useSelector((state) => state.user)
 
     useEffect(() => {
         async function getUser() {
-            if (!user) await dispatch(forcedLogin())
-            
+            if (!user) await dispatch(checkTokenAsync())
             if (user) await dispatch(getUserAsync(user.username))
         }
         getUser()
@@ -45,17 +45,17 @@ const NavBar = () => {
                         <div className="profile">
                             <Link to="/profile">
                                 <div className="user">
-                                    <h3>{user.username}</h3>
+                                    <h3>{userComplete ? userComplete.username : user.username}</h3>
                                 </div>
                                 <div className="img-box">
-                                    <img src={user.photo} alt="Foto de perfil" />
+                                    <img src={userComplete ? userComplete.photo : user.photo} alt="Foto de perfil" />
                                 </div>
                             </Link>
                         </div>
                     </>
                 }
             </div>
-            <Sidebar isOpen={sidebarOpen} toggle={setSidebarOpen}></Sidebar>
+            < Sidebar isOpen={sidebarOpen} toggle={setSidebarOpen}></Sidebar>
         </nav >
     );
 }

@@ -6,7 +6,12 @@ const Search = ({ posts, setFilteredPosts }) => {
     const [searchTerm, setSearchTerm] = useState('');
 
     const handleSearchChange = (event) => {
+        event.preventDefault();
         setSearchTerm(event.target.value);
+        const filtered = posts.filter(post =>
+            post.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredPosts(filtered);
     };
 
     const handleSearchSubmit = (event) => {
@@ -24,7 +29,7 @@ const Search = ({ posts, setFilteredPosts }) => {
                     type="text"
                     className='input'
                     placeholder="Search posts"
-                    style={{width: '500%'}}
+                    style={{ width: '500%' }}
                     value={searchTerm}
                     onChange={handleSearchChange}
                 />

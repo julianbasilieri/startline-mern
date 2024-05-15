@@ -28,6 +28,7 @@
 .user-info {
     display: flex;
     align-items: center;
+    flex-direction: row;
 }
 
 .user-info img {
@@ -58,6 +59,7 @@
     display: flex;
     justify-content: center;
     margin-bottom: 10px;
+
 }
 
 .subject {
@@ -67,11 +69,16 @@
 
 .post-content {
     margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
 }
 
 .post-title {
+    font-size: 20px;
     margin-bottom: 5px;
     margin-right: auto;
+    word-wrap: break-word;
 }
 
 .post-actions {
@@ -85,6 +92,7 @@
 
 .post-info {
     color: #555;
+    word-wrap: break-word;
 }
 
 .post-comments {
@@ -98,6 +106,12 @@
 .comment-item {
     margin-top: 10px;
     position: relative;
+    border-bottom: 1px solid #ccc; /* Añade un borde inferior sólido de 1px de color gris claro */
+
+}
+
+.comment-time {
+    display: flex;
 }
 
 .comment-actions {
@@ -129,10 +143,14 @@
     background-color: #e02d53;
 }
 
-
 .comment-content {
     max-width: 100%;
     margin-bottom: 5px;
+}
+
+.comment-info {
+    word-wrap: break-word;
+    text-align: left;
 }
 
 .comment-owner {
@@ -172,10 +190,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Color de fondo semitransparente */
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 100;
-    /* Asegura que esté detrás del modal pero delante de otros elementos */
 }
 
 .modal {
@@ -198,4 +214,10 @@
 
 .modal .new-post {
     width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .user-info {
+        flex-direction: column;
+    }
 }

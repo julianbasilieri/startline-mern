@@ -5,12 +5,22 @@ import Post from '../pages/Post';
 import TextareaAutosize from 'react-textarea-autosize';
 import { getElapsedTime } from '../utils/getElapsedTime';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faPaperPlane, faX } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPaperPlane, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCommentAsync, deletePostAsync, getPostAsync } from '../store/postSlice';
 import '../styles/Post.css';
-// import { getUserByUsernameAsync } from '../store/userSlice';
+import { Link } from 'react-router-dom';
+import LoaderDNA from './LoaderDNA';
+
+const hexToRgba = (hex, alpha) => {
+    // Extraer los componentes rojo, verde y azul del valor hexadecimal
+    const r = parseInt(hex.substring(1, 3), 16);
+    const g = parseInt(hex.substring(3, 5), 16);
+    const b = parseInt(hex.substring(5, 7), 16);
+    // Devolver el valor rgba con la opacidad proporcionada
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
 
 const PostList = ({ postsUsuario }) => {
     const [commentContents, setCommentContents] = useState('');
@@ -46,13 +56,15 @@ const PostList = ({ postsUsuario }) => {
         const fetchPosts = async () => {
             try {
                 await dispatch(getPostAsync())
+                console.log('getPOstsAsyn')
+                console.log(posts)
 
             } catch (error) {
                 console.error('Error fetching posts:', error);
             }
         };
         fetchPosts();
-    }, [user])
+    }, [])
 
     const handleEditClick = (postId) => {
         setEditingPostId(postId);
@@ -71,24 +83,26 @@ const PostList = ({ postsUsuario }) => {
         return subject;
     };
 
-    // async function handleUser(username) {
-    //     const res = await dispatch(getUserByUsernameAsync(username))
-    //     console.log(res)
-    // }
-
     const isProfilePage = location.pathname === '/profile';
 
     const postsMap = !isProfilePage && filteredPosts.length !== 0 ? filteredPosts : postsUsuario || posts
 
     return (
-        <div className="post-list">
+        <div className="post-list" style={isProfilePage ? { width: '100%' } : { width: '80%' }}>
             {!isProfilePage &&
                 <Search posts={posts} setFilteredPosts={setFilteredPosts} />
             }
             <div>
+                {postsMap && postsMap.length === 0 &&
+                    <div className="no-posts">
+                        <p>No hay publicaciones</p>
+                        <Link to='/new-post'><button >New post</button></Link>
+                    </div>
+                }
+                {!postsMap || !subjects && <LoaderDNA />}
                 {postsMap && subjects && postsMap.map(post => (
                     < div key={post._id} className="post-item" >
-                        <div className="post-subject" style={{ backgroundColor: post.subject.color || findSubject(post.subject, subjects).color }}>
+                        <div className="post-subject" style={{ backgroundColor: hexToRgba(post.subject.color || findSubject(post.subject, subjects).color, 0.5) }}>
                             <p className="subject">
                                 {post.subject.name || findSubject(post.subject, subjects).name}
                             </p>
@@ -104,7 +118,7 @@ const PostList = ({ postsUsuario }) => {
                             {user && (!post.owner.username || user.username === post.owner.username) && (
                                 <div className="post-actions">
                                     <button title='Edit Post' className='submit-button' onClick={() => handleEditClick(post._id)}><FontAwesomeIcon icon={faEdit} /></button>
-                                    <button title='Delete Post' className='delete-button' onClick={() => handleDeleteClick(post._id)}><FontAwesomeIcon icon={faX} /></button>
+                                    <button title='Delete Post' className='delete-button' onClick={() => handleDeleteClick(post._id)}><FontAwesomeIcon icon={faTrash} /></button>
                                 </div>
                             )}
                         </div>

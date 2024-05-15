@@ -1,4 +1,3 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
@@ -12,38 +11,32 @@ import SubjectCollapsible from './components/SubjectCollapsible';
 import Post from './pages/Post';
 import EditProfile from './pages/EditProfile';
 import Footer from './components/Footer';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { checkTokenAsync, forcedLogin, isAdminAsync, logout } from './store/authSlice';
-import { getSubjectsAsync } from './store/subjectSlice';
-import { deleteUser, getUserAsync } from './store/userSlice';
+import { useDispatch } from 'react-redux';
+import { checkTokenAsync, isAdminAsync, logout } from './store/authSlice';
 import EditPassword from './pages/EditPassword';
+import ProtectedRouteAdmin from './components/ProtectedRouteAdmin';
+import ProtectedRouteUser from './components/ProtectedRouteUser';
+import { deleteUser, getUserAsync } from './store/userSlice';
+import { getSubjectsAsync } from './store/subjectSlice';
 
 const App = () => {
     const token = localStorage.getItem('token')
-    const { subjects } = useSelector((state) => state.subject)
-    const navigate = useNavigate()
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     useEffect(() => {
-        const getSubjects = async () => {
-            if (!subjects) await dispatch(getSubjectsAsync())
+        async function getSubjects() {
+            await dispatch(getSubjectsAsync())
         }
         getSubjects()
-
-        if (!token) {
-            toast.error('Tienes que iniciar sesion')
-            navigate('/login')
-            return
-        }
-
+        if (!token) return
         async function checkToken() {
             const checkToken = await dispatch(checkTokenAsync())
 
             if (checkToken.payload.success) {
-                await dispatch(forcedLogin(checkToken.payload.userData))
                 await dispatch(isAdminAsync())
-                console.log('check', checkToken)
                 await dispatch(getUserAsync(checkToken.payload.userData.username))
                 return
             }
@@ -52,8 +45,8 @@ const App = () => {
             dispatch(logout())
             dispatch(deleteUser())
             navigate('/login')
+            return
         }
-
         checkToken()
     }, [])
 
@@ -67,12 +60,17 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/forgot" element={<ForgotPassword />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/subjects" element={<SubjectCollapsible />} />
-                    <Route path='/new-post' element={<Post />} />
-                    <Route path='/edit-profile' element={<EditProfile />} />
-                    <Route path='/edit-password' element={<EditPassword />} />
-                    <Route path="/search" element={<PostList />} />
+                    <Route element={<ProtectedRouteAdmin />}>
+                        <Route path="/subjects" element={<SubjectCollapsible />} />
+                    </Route>
+                    <Route element={<ProtectedRouteUser />}>
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path='/new-post' element={<Post />} />
+                        <Route path='/edit-profile' element={<EditProfile />} />
+                        <Route path='/edit-password' element={<EditPassword />} />
+                        <Route path="/search" element={<PostList />} />
+                    </Route>
+
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </main>

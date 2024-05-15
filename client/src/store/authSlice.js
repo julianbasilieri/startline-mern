@@ -1,9 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toastProm } from "../utils/toastProm";
-
-const token = localStorage.getItem('token')
-
+import { handleToast } from "../utils/toast";
 export const loginAsync = createAsyncThunk('auth/loginAsync', async (credentials) => {
     try {
         const prom = axios.post('http://localhost:4000/api/auth/login', credentials)
@@ -15,15 +13,27 @@ export const loginAsync = createAsyncThunk('auth/loginAsync', async (credentials
     }
 })
 
+export const singUpAsync = createAsyncThunk('auth/singUpAsync', async (credentials) => {
+    try {
+        const prom = await axios.post('http://localhost:4000/api/auth/signup', credentials)
+        const { data } = await toastProm(prom)
+
+        return data
+    } catch (error) {
+        return error.response;
+    }
+})
+
 export const updateUserAsync = createAsyncThunk('auth/updateUserAsync', async (user) => {
     try {
+        const token = localStorage.getItem('token')
         const { data } = await axios.put(`http://localhost:4000/api/users`, user,
             {
                 headers: {
                     Authorization: token
                 }
             })
-        console.log('dataupdate', data)
+        handleToast(data)
 
         return data
     } catch (error) {
@@ -49,6 +59,7 @@ export const isAdminAsync = createAsyncThunk('auth/isAdminAsync', async () => {
 
 export const checkTokenAsync = createAsyncThunk('auth/checkTokenAsync', async () => {
     try {
+        const token = localStorage.getItem('token')
         const { data } = await axios.get('http://localhost:4000/api/auth/check-token', {
             headers: {
                 Authorization: token
@@ -73,26 +84,26 @@ const authSlice = createSlice({
             state.isAdmin = null
             localStorage.removeItem('token')
         },
-        forcedLogin: (state, action) => {
-            state.user = action.payload
-        }
     },
     extraReducers: (builder) => {
         builder.addCase(loginAsync.fulfilled, (state, action) => {
             state.user = action.payload.userData
             localStorage.setItem('token', action.payload.token)
-
         })
             .addCase(updateUserAsync.fulfilled, (state, action) => {
                 state.user = action.payload.usuarioActualizado
             })
             .addCase(isAdminAsync.fulfilled, (state, action) => {
+                console.log('action', action.payload)
                 state.isAdmin = action.payload.success
-                console.log('isAdmin', state.isAdmin)
+            })
+            .addCase(checkTokenAsync.fulfilled, (state, action) => {
+                console.log('che-to', action.payload)
+                state.user = action.payload.userData
             })
     }
 
 })
 
-export const { logout, forcedLogin } = authSlice.actions
+export const { logout } = authSlice.actions
 export default authSlice.reducer

@@ -20,24 +20,19 @@ const EditProfile = () => {
     useEffect(() => {
         async function getUser() {
             try {
-                { console.log('--------------------') }
-                { console.log(user) }
-
                 if (user) {
                     await dispatch(getUserAsync(user.username))
-                    console.log('userComplete', userComplete)
                     // const { data } = await axios.get(`http://localhost:4000/api/users?username=${user.username}`)
-                    const usuario = userComplete
-                    const fechaFormateada = usuario.birthdate.slice(0, 10)
-                    setValue('photo', usuario.photo);
-                    setValue('firstname', usuario.firstname);
-                    setValue('middlename', usuario.middlename);
-                    setValue('lastname', usuario.lastname);
-                    setValue('username', usuario.username);
-                    setValue('email', usuario.email);
+                    const fechaFormateada = userComplete.birthdate.slice(0, 10)
+                    setValue('photo', userComplete.photo);
+                    setValue('firstname', userComplete.firstname);
+                    setValue('middlename', userComplete.middlename);
+                    setValue('lastname', userComplete.lastname);
+                    setValue('username', userComplete.username);
+                    setValue('email', userComplete.email);
                     setValue('birthdate', fechaFormateada);
-                    setValue('university', usuario.university);
-                    setValue('info', usuario.info);
+                    setValue('university', userComplete.university);
+                    setValue('info', userComplete.info);
                 }
             } catch (error) {
                 console.error(error)
@@ -45,7 +40,7 @@ const EditProfile = () => {
         }
 
         getUser()
-    }, [user]);
+    }, [user, userComplete]);
 
     const onSubmit = async data => {
         try {
@@ -83,16 +78,15 @@ const EditProfile = () => {
         }
     };
 
-
     return (
         <div className="card">
             <form className="form" onSubmit={handleSubmit(onSubmit)}>
-                <div className="section">
+                <div className="section" style={{justifyContent: 'center'}}>
                     <div className='user-image'>
                         <img className='profile-image' src={userComplete ? userComplete.photo : ''} alt="User Profile" />
                     </div>
                 </div>
-                <div className="section">
+                <div className="section" style={{justifyContent: 'center'}}>
                     <input
                         type="file"
                         accept="image/*"
@@ -181,7 +175,7 @@ const EditProfile = () => {
                         disabled
                     />
                     <label className="label">Password</label>
-                    <button onClick={() => navigate('/edit-password')}>Edit Contraseña</button>
+                    <button onClick={() => navigate('/edit-password')}>Edit Password</button>
                 </div>
                 <div className="section">
                     <input

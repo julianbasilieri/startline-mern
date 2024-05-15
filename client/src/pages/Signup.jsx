@@ -1,21 +1,25 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import axios from 'axios'
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { singUpAsync } from '../store/authSlice';
 import '../styles/Form.css'
 
 const Signup = () => {
     const { register, handleSubmit, formState: { errors }, getValues } = useForm();
     const { user } = useSelector((state) => state.user)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const onSubmit = async data => {
         try {
-            const res = await axios.post('http://localhost:4000/api/auth/signup', data)
-            console.log(res.data)
+            // toast.success("Usuario creado con exito")
+            // await axios.post('http://localhost:4000/api/auth/signup', data)
+            console.log('data', data)
+            await dispatch(singUpAsync(data))
+            navigate('/login')
         } catch (error) {
-            console.error(error.response.data)
+            console.log(error)
         }
     }
 
@@ -142,7 +146,7 @@ const Signup = () => {
 
                 <div className="section">
                     <input
-                        type="text"
+                        type="password"
                         className={`input ${errors.password ? 'invalid' : ''}`}
                         placeholder="Your password"
                         autoComplete="nope"
@@ -158,7 +162,7 @@ const Signup = () => {
 
                 <div className="section">
                     <input
-                        type="text"
+                        type="password"
                         className={`input ${errors.confirmPassword ? 'invalid' : ''}`}
                         placeholder="Your confirmPassword"
                         autoComplete="nope"
