@@ -2,16 +2,20 @@
     padding: 20px;
 }
 
+.post-list.search {
+    width: 70%;
+}
+
 .post-item {
-    background-color: whitesmoke;
     margin-bottom: 20px;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
-}
-
-.post-item {
     color: black;
+    background-image: url('back-post.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .post-item .post-subject {
@@ -26,13 +30,12 @@
 }
 
 .user-info {
-    display: flex;
-    align-items: center;
     flex-direction: row;
 }
 
 .user-info img {
     border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 1);
 }
 
 .user-profile,
@@ -63,8 +66,8 @@
 }
 
 .subject {
-    background-color: rgba(255, 255, 255, 0.5);
     font-size: 25px;
+    font-weight: bold;
 }
 
 .post-content {
@@ -72,6 +75,7 @@
     display: flex;
     flex-direction: column;
     align-items: start;
+    border-bottom: 1px solid #ccc;
 }
 
 .post-title {
@@ -106,7 +110,8 @@
 .comment-item {
     margin-top: 10px;
     position: relative;
-    border-bottom: 1px solid #ccc; /* Añade un borde inferior sólido de 1px de color gris claro */
+    border-bottom: 1px solid #ccc;
+    /* Añade un borde inferior sólido de 1px de color gris claro */
 
 }
 
@@ -204,10 +209,9 @@
     border-radius: 8px;
     z-index: 9999;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    height: 100%;
     max-width: 800px;
     max-height: 400px;
+    min-width: 500px;
     display: flex;
     overflow: auto;
 }
@@ -219,5 +223,11 @@
 @media screen and (max-width: 768px) {
     .user-info {
         flex-direction: column;
+    }
+    .post-list.search {
+        width: 100%;
+    }
+    .modal {
+        min-width: 300px;
     }
 }

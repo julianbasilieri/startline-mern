@@ -68,7 +68,6 @@ const SubjectForm = ({ subjectId, handleCloseModal, editingSubject }) => {
             </div>
             <div style={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
                 <label>Color:</label>
-                {/* <SliderPicker color={subject.color} onChange={handleColorChange} /> */}
                 <input className='input color-input' type="color" name="color" value={subject.color} onChange={handleChange} />
             </div>
             <div style={{ display: 'flex' }}>

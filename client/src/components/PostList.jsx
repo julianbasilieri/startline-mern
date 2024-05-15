@@ -88,7 +88,7 @@ const PostList = ({ postsUsuario }) => {
     const postsMap = !isProfilePage && filteredPosts.length !== 0 ? filteredPosts : postsUsuario || posts
 
     return (
-        <div className="post-list" style={isProfilePage ? { width: '100%' } : { width: '80%' }}>
+        <div className={`post-list ${!isProfilePage ? 'search' : ''}`}>
             {!isProfilePage &&
                 <Search posts={posts} setFilteredPosts={setFilteredPosts} />
             }

@@ -6,10 +6,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { deleteCommentAsync, updateCommentAsync } from '../store/postSlice';
 import TextareaAutosize from 'react-textarea-autosize';
+import ModalConfirmacion from './ModalConfirmacion';
 
 const CommentList = ({ comments }) => {
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editedCommentContent, setEditedCommentContent] = useState('');
+    const [visibleComments, setVisibleComments] = useState(3);
+    const [showModal, setShowModal] = useState(false);
+    const [commentToDelete, setCommentToDelete] = useState('');
     const { user } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
 
@@ -33,20 +37,45 @@ const CommentList = ({ comments }) => {
         }
     };
 
-    const handleDeleteClick = async (commentId) => {
-        console.log('delete')
+    // const handleDeleteClick = async (commentId) => {
+    //     console.log('delete')
+    //     try {
+    //         await dispatch(deleteCommentAsync(commentId))
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
+
+    const handleLoadMore = () => {
+        setVisibleComments(prev => prev + 3);
+    };
+
+    const handleDeleteClick = (commentId) => {
+        setCommentToDelete(commentId);
+        setShowModal(true);
+    };
+
+    const handleConfirmDelete = async () => {
         try {
-            await dispatch(deleteCommentAsync(commentId))
+            await dispatch(deleteCommentAsync(commentToDelete));
+            setCommentToDelete(''); // Limpiar el id del comentario a eliminar
+            setShowModal(false); // Ocultar el modal
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
+    };
+
+    const handleCancelDelete = () => {
+        setCommentToDelete(''); // Limpiar el id del comentario a eliminar
+        setShowModal(false); // Ocultar el modal
+    };
+
 
     return (
         <div className="comment-list">
-            <h5 style={{fontSize: '17px'}}>Comments:</h5>
+            <h5 style={{ fontSize: '17px' }}>Comments:</h5>
             <div className="comments-container">
-                {comments.map(comment => (
+                {comments.slice(0, visibleComments).map(comment => (
                     <div key={comment._id} className="comment-item">
                         <div className="comment-header">
                             <div className="user-info">
@@ -79,6 +108,10 @@ const CommentList = ({ comments }) => {
                     </div>
                 ))}
             </div>
+            {comments.length > visibleComments && (
+                <button onClick={handleLoadMore}>Load More Comments</button> // Botón para cargar más comentarios
+            )}
+            {showModal && <ModalConfirmacion eliminar='comentario' handleCancelDelete={handleCancelDelete} handleConfirmDelete={handleConfirmDelete} />}
         </div>
     );
 };

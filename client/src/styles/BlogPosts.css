@@ -36,6 +36,7 @@
     margin: 10px;
     background: rgba(47, 48, 58, 0.38);
     padding: 20px;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;

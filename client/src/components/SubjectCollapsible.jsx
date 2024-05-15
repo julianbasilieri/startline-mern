@@ -22,6 +22,7 @@ const SubjectCollapsible = () => {
     }, [activeIndex, subjects]);
 
     const handleToggle = (index) => {
+        console.log(index)
         setActiveIndex(activeIndex === index ? null : index);
     };
 
@@ -44,12 +45,13 @@ const SubjectCollapsible = () => {
 
     return (
         <div className="subject-collapsible">
+            <h1 style={{display: 'flex', justifyContent: 'center'}}>Subjects</h1>
             <div className="add-subject">
                 <button title='Agregar Subject' onClick={handleAddSubject}>+</button>
             </div>
             {subjects && subjects.map((subject, index) => (
                 <div key={subject._id} className="collapsible">
-                    <div className="collapsible-header" style={{ backgroundColor: subject.color }} onClick={() => handleToggle(index)}>
+                    <div className="collapsible-header" style={{ backgroundColor: subject.color }} onClick={() => subject.posts.length > 0 ? handleToggle(index) : ''}>
                         <div className="subject-info">
                             <div className="subject-name">
                                 {subject?.name}
@@ -59,8 +61,12 @@ const SubjectCollapsible = () => {
                                     <div className="post-circle">{subject.posts.length}</div>
                                 </div>
                                 <div className="post-actions">
-                                    <button title='Editar Subject' className='edit-button' onClick={() => handleEditSubject(subject)}><FontAwesomeIcon icon={faEdit} /></button>
-                                    <button title='Eliminar Subject' className='delete-button' disabled={subject.posts.length > 0} onClick={() => handleDeleteSubject(subject._id)}><FontAwesomeIcon icon={faTrash} /></button>
+                                    <button title='Editar Subject' className='edit-button' onClick={(event) => { event.stopPropagation(); handleEditSubject(subject); }}>
+                                        <FontAwesomeIcon icon={faEdit} />
+                                    </button>
+                                    <button title='Eliminar Subject' className='delete-button' disabled={subject.posts.length > 0} onClick={(event) => { event.stopPropagation(); handleDeleteSubject(subject._id); }}>
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </button>
                                     {console.log('posts', subject.posts.length === 0)}
                                 </div>
                             </div>
