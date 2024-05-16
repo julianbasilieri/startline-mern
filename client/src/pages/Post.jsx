@@ -103,7 +103,7 @@ const Post = ({ postId, title, info, subject, closeModal }) => {
                         onChange={handleChange}
                     >
                         <option value="">Select a subject</option>
-                        {subjects.map(subject => (
+                        {subjects?.map(subject => (
                             <option key={subject._id} value={subject._id}>
                                 {subject.name}
                             </option>
