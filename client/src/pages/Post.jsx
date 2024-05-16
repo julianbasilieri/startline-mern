@@ -6,6 +6,7 @@ import { addPostAsync, updatePostAsync } from '../store/postSlice';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { getSubjectsAsync } from '../store/subjectSlice';
+import axios from 'axios'
 
 const Post = ({ postId, title, info, subject, closeModal }) => {
     const [subjects, setSubjects] = useState([]);
@@ -17,8 +18,8 @@ const Post = ({ postId, title, info, subject, closeModal }) => {
         const fetchSubjects = async () => {
             try {
                 if (subjects.length === 0) {
-                    const res = await dispatch(getSubjectsAsync())
-                    console.log("res", res)
+                    // const res = await dispatch(getSubjectsAsync())
+                    const res = axios.get('/api/subjects')
                     setSubjects(res.data.subjects);
                 }
             } catch (error) {
