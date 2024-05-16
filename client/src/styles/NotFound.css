@@ -1,20 +1,19 @@
 .not-found-container {
     text-align: center;
     margin-top: 50px;
-  }
-  
-  .not-found-title {
+}
+
+.not-found-title {
     font-size: 2.5rem;
     color: #ff0000;
-  }
-  
-  .not-found-text {
+}
+
+.not-found-text {
     font-size: 1.2rem;
     margin-top: 20px;
-  }
-  
-  .not-found-gif {
+}
+
+.not-found-gif {
     max-width: 100%;
     margin-top: 50px;
-  }
-  
+}

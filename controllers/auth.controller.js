@@ -134,7 +134,6 @@ AuthController.checkToken = async (req, res) => {
 
 AuthController.checkRol = async (req, res) => {
     try {
-        console.log('check rol')
         return res.json({ success: true })
     } catch (error) {
         return res.json({ success: false, message: error.message })

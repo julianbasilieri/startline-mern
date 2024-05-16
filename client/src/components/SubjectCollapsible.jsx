@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import SubjectForm from './SubjectForm';
-import '../styles/Subject.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteSubjectsAsync } from '../store/subjectSlice';
+import '../styles/Subject.css';
 
 const SubjectCollapsible = () => {
     const [activeIndex, setActiveIndex] = useState(null);
@@ -22,7 +22,6 @@ const SubjectCollapsible = () => {
     }, [activeIndex, subjects]);
 
     const handleToggle = (index) => {
-        console.log(index)
         setActiveIndex(activeIndex === index ? null : index);
     };
 
@@ -67,7 +66,6 @@ const SubjectCollapsible = () => {
                                     <button title='Eliminar Subject' className='delete-button' disabled={subject.posts.length > 0} onClick={(event) => { event.stopPropagation(); handleDeleteSubject(subject._id); }}>
                                         <FontAwesomeIcon icon={faTrash} />
                                     </button>
-                                    {console.log('posts', subject.posts.length === 0)}
                                 </div>
                             </div>
                         </div>

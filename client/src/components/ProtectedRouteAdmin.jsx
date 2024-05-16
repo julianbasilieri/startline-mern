@@ -11,7 +11,6 @@ const ProtectedRouteAdmin = () => {
     const token = localStorage.getItem('token')
     const dispatch = useDispatch()
 
-
     const validatingUser = async () => {
         try {
             const res = await dispatch(isAdminAsync())
@@ -21,7 +20,7 @@ const ProtectedRouteAdmin = () => {
             }
             setLoading(false)
         } catch (error) {
-            console.log(error.message)
+            console.error(error.message)
         }
     }
 

@@ -37,7 +37,7 @@ sendMail.sendMailVerify = async (usuario, token) => {
                             <p style="font-size: 16px;">¡Bienvenido a nuestra plataforma!</p>
                             <p style="font-size: 16px;">Para activar tu cuenta, por favor haz clic en el siguiente botón:</p>
                             <div style="text-align: center;">
-                                <a href="http://localhost:4000/api/users/activate/${token}" target="_blank" style="display: inline-block; padding: 15px 30px; background-color: #118DF0; color: #fff; text-decoration: none; border-radius: 5px; font-size: 18px;">Activar cuenta</a>
+                                <a href="https://startline-mern-production.up.railway.app//api/users/activate/${token}" target="_blank" style="display: inline-block; padding: 15px 30px; background-color: #118DF0; color: #fff; text-decoration: none; border-radius: 5px; font-size: 18px;">Activar cuenta</a>
                             </div>
                         </div>
                     </div>
@@ -45,9 +45,8 @@ sendMail.sendMailVerify = async (usuario, token) => {
             `
         }
         await transporter.sendMail(options)
-        console.log('Mail enviado')
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -67,7 +66,7 @@ sendMail.sendMailPassword = async (usuario, token, contrasena) => {
                             <p style="font-size: 16px;">Has solicitado una recuperación de contraseña. Tu nueva contraseña es:</p>
                             <p style="font-size: 16px;">${contrasena}</p>
                             <div style="text-align: center;">
-                                <a href="http://localhost:4000/api/auth/change-password/${token}/${contrasena}" target="_blank" style="display: inline-block; padding: 15px 30px; background-color: #FF6347; color: #fff; text-decoration: none; border-radius: 5px; font-size: 18px;">Recuperar cuenta</a>
+                                <a href="https://startline-mern-production.up.railway.app/change-password/${token}/${contrasena}" target="_blank" style="display: inline-block; padding: 15px 30px; background-color: #FF6347; color: #fff; text-decoration: none; border-radius: 5px; font-size: 18px;">Recuperar cuenta</a>
                             </div>                            
                             <p style="font-size: 16px; color: #888;">Si no has solicitado esta recuperación, por favor ignora este mensaje.</p>
                         </div>
@@ -76,9 +75,8 @@ sendMail.sendMailPassword = async (usuario, token, contrasena) => {
             `
         }
         await transporter.sendMail(options)
-        console.log('Mail enviado')
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 

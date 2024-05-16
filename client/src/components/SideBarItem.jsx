@@ -3,10 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
 const SidebarItem = ({ to, icon, text, onClick }) => {
-
     const handleClick = () => {
         if (onClick) {
-            onClick(false); // Cierra el sidebar al hacer clic en un elemento
+            onClick(false); 
         }
     };
 

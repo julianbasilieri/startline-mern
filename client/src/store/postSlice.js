@@ -143,7 +143,6 @@ const postSlice = createSlice({
                 }
             })
             .addCase(addCommentAsync.fulfilled, (state, action) => {
-                console.log(action)
                 if (action.payload.success) {
                     const postId = action.payload.commentGuardado.post;
                     const postToUpdate = state.posts.find(post => post._id === postId);
@@ -153,7 +152,6 @@ const postSlice = createSlice({
                 }
             })
             .addCase(updateCommentAsync.fulfilled, (state, action) => {
-                console.log('action', action)
                 if (action.payload.success) {
                     const postId = action.payload.commentActualizado.post;
                     const postToUpdate = state.posts.find(post => post._id === postId);
@@ -166,7 +164,6 @@ const postSlice = createSlice({
                 }
             })
             .addCase(deleteCommentAsync.fulfilled, (state, action) => {
-                console.log(action)
                 if (action.payload.success) {
                     const postId = action.payload.comment.post;
                     const postToDelete = state.posts.find(post => post._id === postId);

@@ -1,6 +1,5 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import LoaderDNA from './LoaderDNA';
 
@@ -13,7 +12,7 @@ const ProtectedRouteUser = () => {
         try {
             setLoading(false)
         } catch (error) {
-            console.log(error.message)
+            console.error(error.message)
         }
     }
 

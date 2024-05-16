@@ -18,33 +18,22 @@ const CommentList = ({ comments }) => {
     const dispatch = useDispatch()
 
     const handleEditClick = (commentId, content) => {
-        console.log('edit')
-        console.log(comments)
         setEditedCommentContent(content)
         setEditingCommentId(commentId);
     };
+
     const handleEditChange = (event) => {
         setEditedCommentContent(event.target.value);
     };
 
     const handleSaveEdit = async (commentId) => {
         try {
-            console.log('comment', editedCommentContent)
             await dispatch(updateCommentAsync({ commentId, comment: { content: editedCommentContent } }));
             setEditingCommentId(null);
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
-
-    // const handleDeleteClick = async (commentId) => {
-    //     console.log('delete')
-    //     try {
-    //         await dispatch(deleteCommentAsync(commentId))
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
 
     const handleLoadMore = () => {
         setVisibleComments(prev => prev + 3);
@@ -58,18 +47,17 @@ const CommentList = ({ comments }) => {
     const handleConfirmDelete = async () => {
         try {
             await dispatch(deleteCommentAsync(commentToDelete));
-            setCommentToDelete(''); // Limpiar el id del comentario a eliminar
-            setShowModal(false); // Ocultar el modal
+            setCommentToDelete('');
+            setShowModal(false); 
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
     const handleCancelDelete = () => {
-        setCommentToDelete(''); // Limpiar el id del comentario a eliminar
-        setShowModal(false); // Ocultar el modal
+        setCommentToDelete(''); 
+        setShowModal(false); 
     };
-
 
     return (
         <div className="comment-list">

@@ -50,22 +50,17 @@
     }
 }
 
-
 @keyframes changeBackground {
     0%, 100% {
         animation: backwards;
         background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../../public/background1.jpg');
     }
 
-    25% {
+    35% {
         background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../../public/background2.avif');
     }
 
-    50% {
+    35% {
         background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../../public/background3.avif');
-    }
-
-    75% {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../../public/background4.avif');
     }
 }

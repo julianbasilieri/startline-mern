@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
-
 const ForgotPassword = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const { user } = useSelector((state) => state.user)
@@ -15,8 +14,7 @@ const ForgotPassword = () => {
 
     const onSubmit = async data => {
         try {
-            const res = await axios.post('http://localhost:4000/api/auth/forget-password', data)
-            console.log(res.data)
+            await axios.post('http://localhost:4000/api/auth/forget-password', data)
         } catch (error) {
             console.error(error.response.data)
         }

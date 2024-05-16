@@ -54,7 +54,6 @@ const Login = () => {
                         <div className="error">{errors.email.message}</div>
                     )}
                 </div>
-
                 <div className="section">
                     <input
                         type="password"

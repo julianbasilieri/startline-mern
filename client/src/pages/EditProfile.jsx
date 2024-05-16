@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { updateUserAsync } from '../store/authSlice';
 import '../styles/Form.css'
 import '../styles/Profile.css'
-
 import TextareaAutosize from 'react-textarea-autosize';
 import { getUserAsync } from '../store/userSlice';
 import axios from 'axios';
@@ -22,7 +21,6 @@ const EditProfile = () => {
             try {
                 if (user) {
                     await dispatch(getUserAsync(user.username))
-                    // const { data } = await axios.get(`http://localhost:4000/api/users?username=${user.username}`)
                     const fechaFormateada = userComplete.birthdate.slice(0, 10)
                     setValue('photo', userComplete.photo);
                     setValue('firstname', userComplete.firstname);
@@ -38,7 +36,6 @@ const EditProfile = () => {
                 console.error(error)
             }
         }
-
         getUser()
     }, [user, userComplete]);
 
@@ -47,7 +44,6 @@ const EditProfile = () => {
             if (data.birthdate) {
                 data.birthdate = new Date(data.birthdate).toISOString();
             }
-
             await dispatch(updateUserAsync(data))
             navigate('/profile')
         } catch (error) {
@@ -72,7 +68,6 @@ const EditProfile = () => {
             const imageUrl = response.data.secure_url;
 
             await dispatch(updateUserAsync({ photo: imageUrl }))
-            console.log(user)
         } catch (error) {
             console.error('Error al cargar la imagen:', error);
         }
@@ -111,7 +106,6 @@ const EditProfile = () => {
                         <div className="error">{errors.firstname.message}</div>
                     )}
                 </div>
-
                 <div className="section">
                     <input
                         type="text"
@@ -123,7 +117,6 @@ const EditProfile = () => {
                     />
                     <label className="label">Middlename</label>
                 </div>
-
                 <div className="section">
                     <input
                         type="text"
@@ -140,7 +133,6 @@ const EditProfile = () => {
                         <div className="error">{errors.lastname.message}</div>
                     )}
                 </div>
-
                 <div className="section">
                     <input
                         type="text"
@@ -152,7 +144,6 @@ const EditProfile = () => {
                     />
                     <label className="label">Username</label>
                 </div>
-
                 <div className="section">
                     <input
                         type="text"
@@ -164,7 +155,6 @@ const EditProfile = () => {
                     />
                     <label className="label">Email</label>
                 </div>
-
                 <div className="section">
                     <input
                         type="text"
@@ -187,7 +177,6 @@ const EditProfile = () => {
                     />
                     <label className="label">Birthdate</label>
                 </div>
-
                 <div className="section">
                     <input
                         type="text"
@@ -198,7 +187,6 @@ const EditProfile = () => {
                     />
                     <label className="label">University</label>
                 </div>
-
                 <div className="section">
                     <TextareaAutosize
                         type="text"
@@ -208,7 +196,6 @@ const EditProfile = () => {
                     />
                     <label className="label">Personal information</label>
                 </div>
-
                 <button type="submit" className="submit-button">Save Changes</button>
                 <button className="cancel-button" onClick={() => navigate(-1)}>Cancel</button>
             </form>

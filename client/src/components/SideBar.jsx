@@ -23,31 +23,6 @@ const Sidebar = ({ isOpen, toggle }) => {
     return (
         <div id="sidebar" className={isOpen ? 'active' : ''}>
             <div className="list-items">
-                {/* <div className="sidebar-item">
-                    <Link to="/" onClick={() => toggle(!isOpen)}>
-                        <FontAwesomeIcon className='icon' icon={faHome} />
-                        <p>Home</p>
-                    </Link>
-                </div>
-                <div className="sidebar-item">
-                    <Link to="/search" onClick={() => toggle(!isOpen)}>
-                        <FontAwesomeIcon className='icon' icon={faSearch} />
-                        <p>Search</p>
-                    </Link>
-                </div>
-                <div className="sidebar-item">
-                    <Link to="/new-post" onClick={() => toggle(!isOpen)}>
-                        <FontAwesomeIcon className='icon' icon={faAdd} />
-                        <p>New Post</p>
-                    </Link>
-                </div>
-                <div className="sidebar-item">
-                    <Link to="/profile" onClick={() => toggle(!isOpen)}>
-                        <FontAwesomeIcon className='icon' icon={faUser} />
-                        <p>Profile</p>
-                    </Link>
-                </div> */}
-
                 <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                     <SidebarItem to="/" icon={faHome} text="Home" onClick={toggle} />
                     <SidebarItem to="/search" icon={faSearch} text="Search" onClick={toggle} />
@@ -55,12 +30,6 @@ const Sidebar = ({ isOpen, toggle }) => {
                     <SidebarItem to="/profile" icon={faUser} text="Profile" onClick={toggle} />
                 </div>
                 {isAdmin &&
-                    // < div className="sidebar-item">
-                    //     <Link to="/subjects" onClick={() => toggle(!isOpen)}>
-                    //         <FontAwesomeIcon className='icon' icon={faTheaterMasks} />
-                    //         <p>Subjects</p>
-                    //     </Link>
-                    // </div>
                     <SidebarItem to="/subjects" icon={faTheaterMasks} text="Subjects" onClick={toggle} />
                 }
             </div>

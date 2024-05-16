@@ -14,4 +14,3 @@ export const getElapsedTime = (createdAt) => {
         return `${days} day${days !== 1 ? 's' : ''} ago`;
     }
 };
-

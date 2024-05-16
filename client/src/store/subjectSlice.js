@@ -29,7 +29,6 @@ export const postSubjectsAsync = createAsyncThunk('subjects/postSubjectsAsync', 
 
 export const updateSubjectsAsync = createAsyncThunk('subjects/updateSubjectsAsync', async ({ subjectId, subject }) => {
     try {
-        console.log('subject', subject)
         const token = localStorage.getItem('token')
         const { data } = await axios.put(`/api/subjects/${subjectId}`, subject, {
             headers: {
@@ -71,7 +70,6 @@ const subjectSlice = createSlice({
                 if (action.payload.success) state.subjects.push(action.payload.subjectGuardado)
             })
             .addCase(updateSubjectsAsync.fulfilled, (state, action) => {
-                console.log('action', action.payload)
                 if (action.payload.success) {
                     const updatedSubjectIndex = state.subjects.findIndex(subject => subject._id === action.payload.subjectActualizada._id)
                     if (updatedSubjectIndex !== -1) {
@@ -80,7 +78,6 @@ const subjectSlice = createSlice({
                 }
             })
             .addCase(deleteSubjectsAsync.fulfilled, (state, action) => {
-                console.log('action', action.payload.subject)
                 const index = state.subjects.findIndex(subject => subject._id === action.payload.subject._id)
                 state.subjects.splice(index, 1)
             })

@@ -17,7 +17,6 @@ const EditPassword = () => {
 
     return (
         <div className="card">
-
             <div className="back-route">
                 <FontAwesomeIcon icon={faArrowLeft} onClick={() => navigate(-1)} className='back-arrow' />
             </div>
@@ -37,7 +36,6 @@ const EditPassword = () => {
                         <div className="error">{errors.password.message}</div>
                     )}
                 </div>
-
                 <div className="section">
                     <input
                         type="text"

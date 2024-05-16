@@ -20,7 +20,6 @@ const SubjectForm = ({ subjectId, handleCloseModal, editingSubject }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log(subject)
             if (subjectId) {
                 await dispatch(updateSubjectsAsync({ subjectId, subject }))
             } else {
@@ -32,23 +31,8 @@ const SubjectForm = ({ subjectId, handleCloseModal, editingSubject }) => {
         }
     };
 
-    // const handleSubmitSubject = async (newSubjectData) => {
-    //     try {
-    //         // const res = await axios.post('http://localhost:4000/api/subjects', newSubjectData);
-    //         console.log('a verrrr')
-    //         console.log(newSubjectData)
-    //         const res = await dispatch(postSubjectsAsync(newSubjectData))
-    //         console.log(res.data.subjectGuardado)
-    //         setSubjects([...subjects, res.data.subjectGuardado]);
-    //         setShowModal(false);
-    //     } catch (error) {
-    //         console.error('Error adding new subject:', error);
-    //     }
-    // };
-
     const handleChange = e => {
         const { name, value } = e.target;
-        console.log(value)
         setSubject(prevSubject => ({
             ...prevSubject,
             [name]: value,

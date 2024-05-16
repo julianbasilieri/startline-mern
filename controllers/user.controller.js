@@ -107,7 +107,7 @@ UsersController.activate = async (req, res) => {
 
         await usuario.save()
 
-        res.json({ success: true, message: 'Usuario activado' })
+        res.redirect('https://startline-mern.vercel.app/activation-account');
     } catch (error) {
         return res.json({ success: false, message: error.message })
     }

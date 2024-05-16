@@ -41,7 +41,6 @@ const Post = ({ postId, title, info, subject, closeModal }) => {
                 closeModal();
             }
             else {
-                console.log(post)
                 await dispatch(addPostAsync(post))
                 navigate('/search')
             }
@@ -83,7 +82,6 @@ const Post = ({ postId, title, info, subject, closeModal }) => {
                     />
                     <label className="label">Title</label>
                 </div>
-
                 <div className="section">
                     <TextareaAutosize
                         className="input textarea"
@@ -93,7 +91,6 @@ const Post = ({ postId, title, info, subject, closeModal }) => {
                         onChange={handleChange}
                     />
                 </div>
-
                 <div className="section">
                     <select
                         className="input select"

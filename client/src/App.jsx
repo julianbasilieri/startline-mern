@@ -21,6 +21,7 @@ import ProtectedRouteUser from './components/ProtectedRouteUser';
 import { deleteUser, getUserAsync } from './store/userSlice';
 import { getSubjectsAsync } from './store/subjectSlice';
 import axios from 'axios';
+import ActivateAccount from './pages/ActivateAcount';
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 
 const App = () => {
@@ -62,6 +63,7 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/forgot" element={<ForgotPassword />} />
+                    <Route path='/activation-account' element={<ActivateAccount />} />
                     <Route element={<ProtectedRouteAdmin />}>
                         <Route path="/subjects" element={<SubjectCollapsible />} />
                     </Route>

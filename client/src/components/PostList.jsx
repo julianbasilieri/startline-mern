@@ -9,16 +9,14 @@ import { faEdit, faPaperPlane, faTrash } from '@fortawesome/free-solid-svg-icons
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCommentAsync, deletePostAsync, getPostAsync } from '../store/postSlice';
-import '../styles/Post.css';
 import { Link } from 'react-router-dom';
 import LoaderDNA from './LoaderDNA';
+import '../styles/Post.css';
 
 const hexToRgba = (hex, alpha) => {
-    // Extraer los componentes rojo, verde y azul del valor hexadecimal
     const r = parseInt(hex.substring(1, 3), 16);
     const g = parseInt(hex.substring(3, 5), 16);
     const b = parseInt(hex.substring(5, 7), 16);
-    // Devolver el valor rgba con la opacidad proporcionada
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
@@ -30,11 +28,11 @@ const PostList = ({ postsUsuario }) => {
     const dispatch = useDispatch()
     const [editingPostId, setEditingPostId] = useState(null);
     const [filteredPosts, setFilteredPosts] = useState([]);
+    const [loading, setLoading] = useState(true)
 
     const handleCommentSubmit = async (content, post) => {
         try {
             await dispatch(addCommentAsync({ content, post }))
-
             setCommentContents(prevState => ({
                 ...prevState,
                 [post]: '',
@@ -56,8 +54,7 @@ const PostList = ({ postsUsuario }) => {
         const fetchPosts = async () => {
             try {
                 await dispatch(getPostAsync())
-                console.log('getPOstsAsyn')
-                console.log(posts)
+
 
             } catch (error) {
                 console.error('Error fetching posts:', error);
@@ -84,7 +81,6 @@ const PostList = ({ postsUsuario }) => {
     };
 
     const isProfilePage = location.pathname === '/profile';
-
     const postsMap = !isProfilePage && filteredPosts.length !== 0 ? filteredPosts : postsUsuario || posts
 
     return (
@@ -93,13 +89,13 @@ const PostList = ({ postsUsuario }) => {
                 <Search posts={posts} setFilteredPosts={setFilteredPosts} />
             }
             <div>
+                {loading && <LoaderDNA />}
                 {postsMap && postsMap.length === 0 &&
                     <div className="no-posts">
                         <p>No hay publicaciones</p>
                         <Link to='/new-post'><button >New post</button></Link>
                     </div>
                 }
-                {!postsMap || !subjects && <LoaderDNA />}
                 {postsMap && subjects && postsMap.map(post => (
                     < div key={post._id} className="post-item" >
                         <div className="post-subject" style={{ backgroundColor: hexToRgba(post.subject.color || findSubject(post.subject, subjects).color, 0.5) }}>
@@ -144,7 +140,6 @@ const PostList = ({ postsUsuario }) => {
                                 <FontAwesomeIcon icon={faPaperPlane} />
                             </button>
                         </div>
-
                         {editingPostId === post._id && (
                             <>
                                 <div className="overlay" onClick={handleCloseModal}></div>
@@ -153,6 +148,7 @@ const PostList = ({ postsUsuario }) => {
                                 </div>
                             </>
                         )}
+                        {loading ? setLoading(false) : ''}
                     </div>
                 ))
                 }

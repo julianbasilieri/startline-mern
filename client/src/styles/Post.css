@@ -30,7 +30,7 @@
 }
 
 .user-info {
-    flex-direction: row;
+    display: flex;
 }
 
 .user-info img {
@@ -49,7 +49,10 @@
 .user-profile-comment {
     width: 30px;
     height: 30px;
+}
 
+.comment-header {
+    display: flex;
 }
 
 .username {
@@ -111,8 +114,6 @@
     margin-top: 10px;
     position: relative;
     border-bottom: 1px solid #ccc;
-    /* Añade un borde inferior sólido de 1px de color gris claro */
-
 }
 
 .comment-time {

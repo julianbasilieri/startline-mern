@@ -13,13 +13,10 @@ const Signup = () => {
 
     const onSubmit = async data => {
         try {
-            // toast.success("Usuario creado con exito")
-            // await axios.post('http://localhost:4000/api/auth/signup', data)
-            console.log('data', data)
             await dispatch(singUpAsync(data))
             navigate('/login')
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
 
@@ -38,7 +35,6 @@ const Signup = () => {
                 <Link to="/signup" className={`register ${isSignupPage ? 'active' : ''}`}>
                     Signup</Link>
             </div>
-
             <form className="form" onSubmit={handleSubmit(onSubmit)}>
                 <div className="section">
                     <input
@@ -60,7 +56,6 @@ const Signup = () => {
                         <div className="error">{errors.firstname.message}</div>
                     )}
                 </div>
-
                 <div className="section">
                     <input
                         type="text"
@@ -79,7 +74,6 @@ const Signup = () => {
                         <div className="error">{errors.middlename.message}</div>
                     )}
                 </div>
-
                 <div className="section">
                     <input
                         type="text"
@@ -99,7 +93,6 @@ const Signup = () => {
                         <div className="error">{errors.lastname.message}</div>
                     )}
                 </div>
-
                 <div className="section">
                     <input
                         type="text"
@@ -123,7 +116,6 @@ const Signup = () => {
                         <div className="error">{errors.username.message}</div>
                     )}
                 </div>
-
                 <div className="section">
                     <input
                         type="text"
@@ -143,7 +135,6 @@ const Signup = () => {
                         <div className="error">{errors.email.message}</div>
                     )}
                 </div>
-
                 <div className="section">
                     <input
                         type="password"
@@ -159,7 +150,6 @@ const Signup = () => {
                         <div className="error">{errors.password.message}</div>
                     )}
                 </div>
-
                 <div className="section">
                     <input
                         type="password"

@@ -13,8 +13,7 @@ const Profile = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    function editUser(user) {
-        console.log(user)
+    function editUser() {
         navigate('/edit-profile')
     }
 
@@ -31,39 +30,6 @@ const Profile = () => {
     }, [user])
 
     return (
-        // <>
-        //     {user && posts && (
-        //         <div className='content'>
-        //             <div className="user">
-        //                 <div className="data-principal">
-        //                     <div className='user-image'>
-        //                         <img className='profile-image' src={user.userData.photo} alt="User Profile" />
-        //                     </div>
-        //                     <div className="user-data">
-        //                         <p>{user.userData.username}</p>
-        //                         <p>{user.userData.email}</p>
-
-        //                         {user.userData.university &&
-        //                             <p>University: {user.userData.university}</p>
-        //                         }
-        //                     </div>
-        //                     <div className="user-actions">
-        //                         <button onClick={editUser}>Edit Profile</button>
-        //                     </div>
-        //                 </div>
-        //                 <div className="data-secundaria">
-        //                     {user.userData.info &&
-        //                         <p>{user.userData.info}</p>
-        //                     }
-        //                 </div>
-        //             </div>
-        //             <div className="posts">
-        //                 <h2>User Posts</h2>
-        //                 <PostList postsUsuario={posts.filter(post => post.owner._id === user.userData._id)} />
-        //             </div>
-        //         </div>
-        //     )}
-        // </>
         <>
             {userComplete && (
                 <div className='content'>
@@ -84,11 +50,6 @@ const Profile = () => {
                                 <button onClick={editUser}>Edit Profile</button>
                             </div>
                         </div>
-                        {/* <div className="data-secundaria">
-                            {userComplete.info &&
-                                <p>{userComplete.info}</p>
-                            }
-                        </div> */}
                     </div>
                     {userComplete && (
                         <div className="posts">
@@ -99,7 +60,6 @@ const Profile = () => {
                 </div>
             )}
         </>
-
     );
 };
 

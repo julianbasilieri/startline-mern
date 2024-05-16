@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toastProm } from "../utils/toastProm";
 import { handleToast } from "../utils/toast";
+
 export const loginAsync = createAsyncThunk('auth/loginAsync', async (credentials) => {
     try {
         const prom = axios.post('/api/auth/login', credentials)
@@ -52,7 +53,7 @@ export const isAdminAsync = createAsyncThunk('auth/isAdminAsync', async () => {
 
         return data
     } catch (error) {
-        console.log(error)
+        console.error(error)
         return error.response.data;
     }
 })
@@ -67,7 +68,18 @@ export const checkTokenAsync = createAsyncThunk('auth/checkTokenAsync', async ()
         })
         return data
     } catch (error) {
-        console.log(error)
+        console.error(error)
+        return error.response.data;
+    }
+})
+
+export const activateAccountAsync = createAsyncThunk('auth/activateAccountAsync', async () => {
+    try {
+        const token = localStorage.getItem('token')
+        const { data } = await axios.get(`/api/users/activate/${token}`)
+        return data
+    } catch (error) {
+        console.error(error)
         return error.response.data;
     }
 })
@@ -94,15 +106,12 @@ const authSlice = createSlice({
                 state.user = action.payload.usuarioActualizado
             })
             .addCase(isAdminAsync.fulfilled, (state, action) => {
-                console.log('action', action.payload)
                 state.isAdmin = action.payload.success
             })
             .addCase(checkTokenAsync.fulfilled, (state, action) => {
-                console.log('che-to', action.payload)
                 state.user = action.payload.userData
             })
     }
-
 })
 
 export const { logout } = authSlice.actions
