@@ -65,7 +65,7 @@ sendMail.sendMailPassword = async (usuario, token, contrasena) => {
                             <p style="font-size: 16px;">Has solicitado una recuperación de contraseña. Tu nueva contraseña es:</p>
                             <p style="font-size: 16px;">${contrasena}</p>
                             <div style="text-align: center;">
-                                <a href="https://startline-mern-production.up.railway.app/change-password/${token}/${contrasena}" target="_blank" style="display: inline-block; padding: 15px 30px; background-color: #FF6347; color: #fff; text-decoration: none; border-radius: 5px; font-size: 18px;">Recuperar cuenta</a>
+                                <a href="https://startline-mern-production.up.railway.app/api/auth/change-password/${token}/${contrasena}" target="_blank" style="display: inline-block; padding: 15px 30px; background-color: #FF6347; color: #fff; text-decoration: none; border-radius: 5px; font-size: 18px;">Recuperar cuenta</a>
                             </div>                            
                             <p style="font-size: 16px; color: #888;">Si no has solicitado esta recuperación, por favor ignora este mensaje.</p>
                         </div>
