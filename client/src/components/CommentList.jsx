@@ -97,7 +97,7 @@ const CommentList = ({ comments }) => {
                 ))}
             </div>
             {comments.length > visibleComments && (
-                <button onClick={handleLoadMore}>Load More Comments</button> // Botón para cargar más comentarios
+                <button onClick={handleLoadMore}>Load More Comments</button>
             )}
             {showModal && <ModalConfirmacion eliminar='comentario' handleCancelDelete={handleCancelDelete} handleConfirmDelete={handleConfirmDelete} />}
         </div>

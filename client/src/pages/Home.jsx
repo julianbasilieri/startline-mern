@@ -12,7 +12,7 @@ const Home = () => {
     const navigate = useNavigate()
 
     function handleNavigate() {
-        navigate('/login')
+        navigate('/singup')
     }
 
     const scrollToContent = () => {

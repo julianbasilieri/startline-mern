@@ -6,6 +6,10 @@
     width: 70%;
 }
 
+.no-posts {
+    color: black;
+}
+
 .post-item {
     margin-bottom: 20px;
     padding: 20px;
@@ -31,6 +35,7 @@
 
 .user-info {
     display: flex;
+    flex-direction: column;
 }
 
 .user-info img {
@@ -222,12 +227,10 @@
 }
 
 @media screen and (max-width: 768px) {
-    .user-info {
-        flex-direction: column;
-    }
     .post-list.search {
         width: 100%;
     }
+
     .modal {
         min-width: 300px;
     }

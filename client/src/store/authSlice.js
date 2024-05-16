@@ -84,6 +84,17 @@ export const activateAccountAsync = createAsyncThunk('auth/activateAccountAsync'
     }
 })
 
+export const forgotPassword = createAsyncThunk('auth/forgotPassword', async (info) => {
+    try {
+        const { data } = await axios.post('/api/auth/forget-password', info)
+
+        return data
+    } catch (error) {
+        console.error(error)
+        return error.response.data;
+    }
+})
+
 const authSlice = createSlice({
     name: "auth",
     initialState: {

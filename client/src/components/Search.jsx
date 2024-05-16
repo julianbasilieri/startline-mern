@@ -28,7 +28,7 @@ const Search = ({ posts, setFilteredPosts }) => {
                 <input
                     type="text"
                     className='input'
-                    placeholder="Search posts"
+                    placeholder="Search posts by title"
                     style={{ width: '500%' }}
                     value={searchTerm}
                     onChange={handleSearchChange}

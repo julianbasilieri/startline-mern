@@ -1,24 +1,23 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
 import '../styles/Form.css';
 import { addPostAsync, updatePostAsync } from '../store/postSlice';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import { getSubjectsAsync } from '../store/subjectSlice';
 
 const Post = ({ postId, title, info, subject, closeModal }) => {
     const [subjects, setSubjects] = useState([]);
     const [post, setPost] = useState({ title: '', info: '', subject: '' });
     const navigate = useNavigate()
-
     const dispatch = useDispatch();
 
     useEffect(() => {
         const fetchSubjects = async () => {
             try {
                 if (subjects.length === 0) {
-                    const res = await axios.get('http://localhost:4000/api/subjects');
+                    const res = await dispatch(getSubjectsAsync())
                     setSubjects(res.data.subjects);
                 }
             } catch (error) {
@@ -36,13 +35,15 @@ const Post = ({ postId, title, info, subject, closeModal }) => {
     const onSubmit = async e => {
         e.preventDefault();
         try {
-            if (postId) {
-                await dispatch(updatePostAsync({ postId, info: post }))
-                closeModal();
-            }
-            else {
-                await dispatch(addPostAsync(post))
-                navigate('/search')
+            if (post) {
+                if (postId) {
+                    await dispatch(updatePostAsync({ postId, info: post }))
+                    closeModal();
+                }
+                else {
+                    await dispatch(addPostAsync(post))
+                    navigate('/search')
+                }
             }
         } catch (error) {
             console.error(error.response.data);

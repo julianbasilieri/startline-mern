@@ -2,19 +2,20 @@ import '../styles/Form.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { forgotPassword } from '../store/authSlice';
 
 const ForgotPassword = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const { user } = useSelector((state) => state.user)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const onSubmit = async data => {
         try {
-            await axios.post('http://localhost:4000/api/auth/forget-password', data)
+            dispatch(forgotPassword(data))
         } catch (error) {
             console.error(error.response.data)
         }

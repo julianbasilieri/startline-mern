@@ -12,7 +12,7 @@ const EditPassword = () => {
     const token = localStorage.getItem('token')
 
     const onSubmit = async data => {
-        await axios.get(`http://localhost:4000/api/auth/change-password/${token}/${data.password}`)
+        await axios.get(`https://startline-mern-production.up.railway.app/change-password/${token}/${data.password}`)
     }
 
     return (

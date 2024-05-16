@@ -12,6 +12,7 @@ import { addCommentAsync, deletePostAsync, getPostAsync } from '../store/postSli
 import { Link } from 'react-router-dom';
 import LoaderDNA from './LoaderDNA';
 import '../styles/Post.css';
+import ModalConfirmacion from './ModalConfirmacion';
 
 const hexToRgba = (hex, alpha) => {
     const r = parseInt(hex.substring(1, 3), 16);
@@ -29,6 +30,8 @@ const PostList = ({ postsUsuario }) => {
     const [editingPostId, setEditingPostId] = useState(null);
     const [filteredPosts, setFilteredPosts] = useState([]);
     const [loading, setLoading] = useState(true)
+    const [showModal, setShowModal] = useState(false);
+    const [postToDelete, setPostToDelete] = useState('');
 
     const handleCommentSubmit = async (content, post) => {
         try {
@@ -71,9 +74,25 @@ const PostList = ({ postsUsuario }) => {
         setEditingPostId(null);
     };
 
-    const handleDeleteClick = async (postId) => {
-        await dispatch(deletePostAsync(postId))
-    }
+    const handleDeleteClick = (commentId) => {
+        setPostToDelete(commentId);
+        setShowModal(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            await dispatch(deletePostAsync(postToDelete))
+            setPostToDelete('');
+            setShowModal(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setPostToDelete('');
+        setShowModal(false);
+    };
 
     const findSubject = (subjectId, subjects) => {
         const subject = subjects.find(sub => sub._id === subjectId);
@@ -90,11 +109,13 @@ const PostList = ({ postsUsuario }) => {
             }
             <div>
                 {loading && <LoaderDNA />}
-                {postsMap && postsMap.length === 0 &&
-                    <div className="no-posts">
+                {postsMap && postsMap.length === 0 && (
+                    < div className="no-posts">
+                        {loading ? setLoading(false) : ''}
                         <p>No hay publicaciones</p>
                         <Link to='/new-post'><button >New post</button></Link>
                     </div>
+                )
                 }
                 {postsMap && subjects && postsMap.map(post => (
                     < div key={post._id} className="post-item" >
@@ -105,7 +126,9 @@ const PostList = ({ postsUsuario }) => {
                         </div>
                         <div className="post-header">
                             <div className="user-info">
-                                <img src={post.owner.photo} alt="User Profile" className="user-profile" />
+                                <div style={{ width: '100px', height: '100px' }}>
+                                    <img src={post.owner.photo} alt="User Profile" className="user-profile" />
+                                </div>
                                 <div>
                                     <p className="username">@{post.owner.username}</p>
                                     <p className="subject-time">{getElapsedTime(post.createdAt)}</p>
@@ -152,6 +175,8 @@ const PostList = ({ postsUsuario }) => {
                     </div>
                 ))
                 }
+                {showModal && <ModalConfirmacion eliminar='comentario' handleCancelDelete={handleCancelDelete} handleConfirmDelete={handleConfirmDelete} />}
+
             </div >
         </div >
     );

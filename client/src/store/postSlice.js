@@ -127,7 +127,7 @@ const postSlice = createSlice({
             if (action.payload.success) state.posts = action.payload.posts;
         })
             .addCase(addPostAsync.fulfilled, (state, action) => {
-                if (action.payload.success) state.posts.push(action.payload.postGuardado);
+                if (action.payload.success) state.posts.unshift(action.payload.postGuardado);
             })
             .addCase(updatePostAsync.fulfilled, (state, action) => {
                 if (action.payload.success) {

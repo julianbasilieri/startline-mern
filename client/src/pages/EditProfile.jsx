@@ -15,29 +15,33 @@ const EditProfile = () => {
     const { userComplete } = useSelector((state) => state.user)
     const navigate = useNavigate()
     const dispatch = useDispatch()
-
+    
     useEffect(() => {
         async function getUser() {
             try {
                 if (user) {
-                    await dispatch(getUserAsync(user.username))
-                    const fechaFormateada = userComplete.birthdate.slice(0, 10)
-                    setValue('photo', userComplete.photo);
-                    setValue('firstname', userComplete.firstname);
-                    setValue('middlename', userComplete.middlename);
-                    setValue('lastname', userComplete.lastname);
-                    setValue('username', userComplete.username);
-                    setValue('email', userComplete.email);
-                    setValue('birthdate', fechaFormateada);
-                    setValue('university', userComplete.university);
-                    setValue('info', userComplete.info);
+                    await dispatch(getUserAsync(user.username));
                 }
             } catch (error) {
-                console.error(error)
+                console.error(error);
             }
         }
-        getUser()
-    }, [user, userComplete]);
+        getUser();
+    }, [user, dispatch]);
+
+    useEffect(() => {
+        if (userComplete) {
+            setValue('photo', userComplete.photo);
+            setValue('firstname', userComplete.firstname);
+            setValue('middlename', userComplete.middlename);
+            setValue('lastname', userComplete.lastname);
+            setValue('username', userComplete.username);
+            setValue('email', userComplete.email);
+            setValue('birthdate', userComplete.birthdate ? userComplete.birthdate.slice(0, 10) : undefined);
+            setValue('university', userComplete.university);
+            setValue('info', userComplete.info);
+        }
+    }, [userComplete, setValue]);
 
     const onSubmit = async data => {
         try {
@@ -76,12 +80,12 @@ const EditProfile = () => {
     return (
         <div className="card">
             <form className="form" onSubmit={handleSubmit(onSubmit)}>
-                <div className="section" style={{justifyContent: 'center'}}>
+                <div className="section" style={{ justifyContent: 'center' }}>
                     <div className='user-image'>
                         <img className='profile-image' src={userComplete ? userComplete.photo : ''} alt="User Profile" />
                     </div>
                 </div>
-                <div className="section" style={{justifyContent: 'center'}}>
+                <div className="section" style={{ justifyContent: 'center' }}>
                     <input
                         type="file"
                         accept="image/*"

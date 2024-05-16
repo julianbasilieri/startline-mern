@@ -4,7 +4,8 @@ import { postSubjectsAsync, updateSubjectsAsync } from '../store/subjectSlice'
 import { useDispatch } from 'react-redux';
 
 const SubjectForm = ({ subjectId, handleCloseModal, editingSubject }) => {
-    const [subject, setSubject] = useState({ name: '', info: '', color: '' });
+    const [subject, setSubject] = useState({ name: '', info: '', color: '#000000' });
+    const [errors, setErrors] = useState({ name: '', info: '' });
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -20,11 +21,22 @@ const SubjectForm = ({ subjectId, handleCloseModal, editingSubject }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if (subjectId) {
-                await dispatch(updateSubjectsAsync({ subjectId, subject }))
-            } else {
-                await dispatch(postSubjectsAsync(subject))
+            if (!subject.name.trim()) {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    name: 'Name is required',
+                }));
+                return;
             }
+            if (!subject.info.trim()) {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    info: 'Info is required',
+                }));
+                return;
+            }
+            if (subjectId) await dispatch(updateSubjectsAsync({ subjectId, subject }))
+            else await dispatch(postSubjectsAsync(subject))
             handleCloseModal(true)
         } catch (error) {
             console.error('Error updating subject:', error);
@@ -37,18 +49,23 @@ const SubjectForm = ({ subjectId, handleCloseModal, editingSubject }) => {
             ...prevSubject,
             [name]: value,
         }));
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            [name]: '',
+        }));
     };
-
     return (
         <form onSubmit={handleSubmit}>
             <h2>New Subject</h2>
             <div>
                 <label>Name:</label>
-                <input className='input' type="text" name="name" value={subject.name} onChange={handleChange} />
+                <input className={`input ${errors.name ? 'invalid' : ''}`} type="text" name="name" value={subject.name} onChange={handleChange} />
+                {errors.name && <div className="error">{errors.name}</div>}
             </div>
             <div>
                 <label>Info:</label>
-                <textarea className='input textarea' name="info" value={subject.info} onChange={handleChange} />
+                <textarea className={`input textarea ${errors.info ? 'invalid' : ''}`} name="info" value={subject.info} onChange={handleChange} />
+                {errors.info && <div className="error">{errors.info}</div>}
             </div>
             <div style={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
                 <label>Color:</label>

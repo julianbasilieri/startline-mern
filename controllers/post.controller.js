@@ -13,6 +13,7 @@ PostController.getAllPosts = async (req, res, next) => {
         }
 
         const posts = await Post.find(filter)
+            .sort({ createdAt: -1 })
             .populate('owner', 'username photo _id')
             .populate('subject', 'name color _id')
             .populate({
@@ -55,7 +56,7 @@ PostController.deletePostById = async (req, res, next) => {
 
         if (!post) throw new NotFoundError('Post')
 
-        return res.json({ success: true, message: 'Post eliminado correctamente', post})
+        return res.json({ success: true, message: 'Post eliminado correctamente', post })
     } catch (error) {
         return res.json({ success: false, message: error.message })
     }
@@ -73,7 +74,7 @@ PostController.updatePostById = async (req, res, next) => {
 
         if (!postActualizado) throw new NotFoundError('Post')
 
-        return res.json({ success: true, message: 'Post actualizado correctamente', postActualizado})
+        return res.json({ success: true, message: 'Post actualizado correctamente', postActualizado })
     } catch (error) {
         return res.json({ success: false, message: error.message })
     }
