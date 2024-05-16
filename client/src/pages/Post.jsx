@@ -18,7 +18,8 @@ const Post = ({ postId, title, info, subject, closeModal }) => {
             try {
                 if (subjects.length === 0) {
                     const res = await dispatch(getSubjectsAsync())
-                    setSubjects(res.subjects);
+                    console.log("res", res)
+                    setSubjects(res.data.subjects);
                 }
             } catch (error) {
                 console.error('Error fetching subjects:', error);
