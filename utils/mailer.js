@@ -12,18 +12,14 @@ const transporter = nodemailer.createTransport({
     }
 })
 
-const headerMail = {
-    from: {
-        name: "Science4Everybody",
-        address: "basilierijulian@gmail.com"
-    },
-    to: usuario.email
-}
-
 sendMail.sendMailVerify = async (usuario, token) => {
     try {
         const options = {
-            ...headerMail,
+            from: {
+                name: "Science4Everybody",
+                address: "basilierijulian@gmail.com"
+            },
+            to: usuario.email,
             subject: "¡Bienvenido a nuestra plataforma!",
             html: `
                 <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
@@ -52,7 +48,11 @@ sendMail.sendMailVerify = async (usuario, token) => {
 sendMail.sendMailPassword = async (usuario, token, contrasena) => {
     try {
         const options = {
-            ...headerMail,
+            from: {
+                name: "Science4Everybody",
+                address: "basilierijulian@gmail.com"
+            },
+            to: usuario.email,
             subject: "Recuperacion de contraseña",
             html: `
                 <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
