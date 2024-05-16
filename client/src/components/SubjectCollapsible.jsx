@@ -60,10 +60,6 @@ const SubjectCollapsible = () => {
         setShowModalDelete(false);
     };
 
-    // const handleDeleteSubject = async (subjectId) => {
-    //     await dispatch(deleteSubjectsAsync(subjectId))
-    // };
-
     const handleCloseModal = () => {
         setShowModal(false);
         setEditingSubject(null)

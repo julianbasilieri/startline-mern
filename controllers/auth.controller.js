@@ -45,7 +45,7 @@ AuthController.signUp = async (req, res) => {
 
         sendMailVerify(nuevoUsuario, token)
 
-        return res.json({ success: true, message: 'Usuario creado correctamente', user: usuarioGuardado })
+        return res.json({ success: true, message: 'Usuario creado correctamente, revisa tu mail para activar tu cuenta', user: usuarioGuardado })
     } catch (error) {
         return res.json({ success: false, message: error.message })
     }

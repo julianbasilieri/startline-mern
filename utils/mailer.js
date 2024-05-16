@@ -17,8 +17,7 @@ const headerMail = {
         name: "Science4Everybody",
         address: "basilierijulian@gmail.com"
     },
-    // to: usuario.email
-    to: "julian_basilieri@hotmail.com"
+    to: usuario.email
 }
 
 sendMail.sendMailVerify = async (usuario, token) => {
@@ -37,7 +36,7 @@ sendMail.sendMailVerify = async (usuario, token) => {
                             <p style="font-size: 16px;">¡Bienvenido a nuestra plataforma!</p>
                             <p style="font-size: 16px;">Para activar tu cuenta, por favor haz clic en el siguiente botón:</p>
                             <div style="text-align: center;">
-                                <a href="https://startline-mern-production.up.railway.app//api/users/activate/${token}" target="_blank" style="display: inline-block; padding: 15px 30px; background-color: #118DF0; color: #fff; text-decoration: none; border-radius: 5px; font-size: 18px;">Activar cuenta</a>
+                                <a href="https://startline-mern-production.up.railway.app/api/users/activate/${token}" target="_blank" style="display: inline-block; padding: 15px 30px; background-color: #118DF0; color: #fff; text-decoration: none; border-radius: 5px; font-size: 18px;">Activar cuenta</a>
                             </div>
                         </div>
                     </div>
