@@ -142,7 +142,11 @@ const Signup = () => {
                         placeholder="Your password"
                         autoComplete="nope"
                         {...register("password", {
-                            required: "Password is required"
+                            required: "Password is required",
+                            minLength: {
+                                value: 8,
+                                message: "Password must be at least 8 characters long"
+                            }
                         })}
                     />
                     <label className="label">Password</label>
