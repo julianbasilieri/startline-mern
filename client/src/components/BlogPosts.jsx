@@ -24,7 +24,7 @@ const BlogPosts = () => {
     }, [dispatch, subjects])
 
     return (
-        <div className="container">
+        <div className="container" id='container'>
             <h2 className="heading">Our Themes</h2>
             <div className="blogs">
                 {arraySubjects.map((subject, index) => (
