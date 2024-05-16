@@ -20,6 +20,7 @@ const Post = ({ postId, title, info, subject, closeModal }) => {
                 if (subjects.length === 0) {
                     // const res = await dispatch(getSubjectsAsync())
                     const res = axios.get('/api/subjects')
+                    console.log('res', res)
                     setSubjects(res.data.subjects);
                 }
             } catch (error) {
