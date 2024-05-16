@@ -175,7 +175,7 @@ const PostList = ({ postsUsuario }) => {
                     </div>
                 ))
                 }
-                {showModal && <ModalConfirmacion eliminar='comentario' handleCancelDelete={handleCancelDelete} handleConfirmDelete={handleConfirmDelete} />}
+                {showModal && <ModalConfirmacion eliminar='post' handleCancelDelete={handleCancelDelete} handleConfirmDelete={handleConfirmDelete} />}
 
             </div >
         </div >
